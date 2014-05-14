@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+/*
+ * 2014.05.14
+ */
 public class MainActivity extends Activity {
 
     @Override
