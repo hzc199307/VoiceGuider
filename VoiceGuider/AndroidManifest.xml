@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.netease.voiceguider"
+    package="com.ne.voiceguider"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,13 +14,25 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.netease.voiceguider.MainActivity"
+            android:name="com.ne.voiceguider.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.ne.voiceguider.TabsActivity"
+            android:label="@string/title_activity_tabs" >
+        </activity>
+        <activity
+            android:name="com.ne.voiceguider.activity.HikingActivity"
+            android:label="@string/title_activity_hiking" >
+        </activity>
+        <activity
+            android:name="com.ne.voiceguider.activity.VoicePlayerActivity"
+            android:label="@string/title_activity_voice_player" >
         </activity>
     </application>
 

@@ -4,5 +4,8 @@
     <string name="app_name">VoiceGuider</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_tabs">TabsActivity</string>
+    <string name="title_activity_hiking">HikingActivity</string>
+    <string name="title_activity_voice_player">VoicePlayerActivity</string>
 
 </resources>
