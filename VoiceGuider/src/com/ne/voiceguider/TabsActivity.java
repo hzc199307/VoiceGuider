@@ -11,6 +11,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TabHost;
 
+/**
+ * 
+ * @ClassName: TabsActivity 
+ * @Description: TODO 
+ * @author HeZhichao
+ * @date 2014年5月15日 下午5:28:10 
+ *
+ */
 public class TabsActivity extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
