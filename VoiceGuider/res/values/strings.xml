@@ -8,5 +8,6 @@
     <string name="title_activity_hiking">HikingActivity</string>
     <string name="title_activity_voice_player">VoicePlayerActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_city">CityActivity</string>
 
 </resources>

@@ -1,8 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ne.voiceguider.activity.HikingActivity"
-    tools:ignore="MergeRootFrame" />
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
+    <RelativeLayout
+        android:id="@+id/hiking_head"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/hiking_head" >
+
+        <TextView
+            android:id="@+id/hiking_head_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="语音导游"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/hiking_head_search"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/hiking_search" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/hiking_city"
+        android:layout_width="fill_parent"
+        android:layout_height="8mm" >
+
+        <TextView
+            android:id="@+id/hiking_cityname"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="15px"
+            android:gravity="center_vertical"
+            android:text="城市名称" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/TextDate"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15px"
+            android:text="" >
+        </TextView>
+    </RelativeLayout>
+
+</LinearLayout>
