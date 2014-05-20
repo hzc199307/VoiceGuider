@@ -40,10 +40,13 @@ public class HikingActivity extends ActionBarActivity {
 		hiking_city = (RelativeLayout)findViewById(R.id.hiking_city);
 		hiking_city.setOnClickListener(new View.OnClickListener() {
 
-			@Override
+			@Override //TODO
 			public void onClick(View arg0) {
-				Intent intent = new Intent(HikingActivity.this,CityActivity.class); // 跳转到城市景点详情页面
-				startActivity(intent);
+				Intent intent = new Intent(HikingActivity.this,CityActivity.class); // 跳转到城市景点详情页面 
+				Bundle bundle = new Bundle();                           //创建Bundle对象   
+				bundle.putString("cityName", "广州市");     //装入数据   
+				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
+				startActivity(intent);                                     //开始切换 
 			}
 		});
 	}

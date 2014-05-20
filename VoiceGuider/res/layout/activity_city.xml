@@ -38,10 +38,95 @@
             android:background="@drawable/hiking_search" />
     </RelativeLayout>
 
-    <com.baidu.mapapi.map.MapView
-        android:id="@+id/bmapsView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="true" />
+    <FrameLayout
+        android:id="@+id/city_scenelist_or_scenemap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/city_scenemap"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/city_scenelist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/city_scene_top_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="#ffffff" >
+
+                <!-- android:background="#00000000"透明色 -->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/city_scenelist_button"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="12"
+                        android:background="@drawable/button_style"
+                        android:padding="10dip"
+                        android:text="景点列表"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/city_scenemap_button"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="12"
+                        android:background="@drawable/button_style"
+                        android:padding="10dip"
+                        android:text="景点地图"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/city_scene_alldownload_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="#ffffff" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:text="全部景点"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/city_scene_alldownload_button"
+                    android:layout_width="18sp"
+                    android:layout_height="18sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/city_scene_download_button_undone"
+                    android:padding="10dip" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/city_scene_download_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#ffffff"
+                android:visibility="visible" >
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

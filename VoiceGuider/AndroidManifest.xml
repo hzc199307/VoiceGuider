@@ -12,9 +12,14 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-         >
+        android:theme="@style/AppTheme" >
+
         <!-- android:theme="@style/AppTheme" -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="7xdnxhqftFDXzU9pnylCpQvr" >
+        </meta-data>
+
         <activity
             android:name="com.ne.voiceguider.MainActivity"
             android:label="@string/app_name" >
@@ -41,13 +46,10 @@
             android:label="@string/title_activity_test" >
         </activity>
         <activity
-            android:name=".MapDemo"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="sensor" >
-        </activity>
-        <activity
             android:name="com.ne.voiceguider.activity.CityActivity"
-            android:label="@string/title_activity_city" >
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_city"
+            android:screenOrientation="sensor" >
         </activity>
     </application>
 

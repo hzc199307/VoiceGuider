@@ -40,7 +40,7 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="15px"
             android:gravity="center_vertical"
-            android:text="城市名称" >
+            android:text="广州" >
         </TextView>
 
         <TextView
