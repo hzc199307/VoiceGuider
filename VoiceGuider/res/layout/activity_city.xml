@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android_custom="http://schemas.android.com/apk/res/com.ne.voiceguider"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -48,7 +49,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:clickable="true"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/city_scenelist"
@@ -94,7 +95,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/city_scene_alldownload_layout"
+                android:id="@+id/city_scene_mapdownload_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="60dp"
                 android:background="#ffffff" >
@@ -105,18 +106,39 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
-                    android:text="全部景点"
+                    android:text="离线地图"
                     android:textSize="18sp" />
 
-                <Button
-                    android:id="@+id/city_scene_alldownload_button"
-                    android:layout_width="18sp"
-                    android:layout_height="18sp"
+                <FrameLayout
+                    android:id="@+id/city_scene_mapdownload_button"
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/city_scene_download_button_undone"
-                    android:padding="10dip" />
+                    android:layout_marginRight="20dp" >
+
+                    <com.ne.voiceguider.view.RoundProgressBar
+                        android:id="@+id/city_scene_alldownload_button_roundProgressBar"
+                        android:layout_width="30dip"
+                        android:layout_height="30dip"
+                        android_custom:roundColor="#00000000"
+                        android_custom:roundProgressColor="#C6E2FF"
+                        android_custom:roundWidth="2dip"
+                        android_custom:textIsDisplayable="false" />
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"  >
+
+                        <ImageView
+                            android:id="@+id/city_scene_alldownload_button_imageView"
+                            android:layout_width="20dip"
+                            android:layout_height="20dip"
+                            android:layout_centerInParent="true" 
+                            android:scaleType="centerInside"
+                            android:src="@drawable/city_scene_download_button_undone" />
+                    </RelativeLayout>
+                </FrameLayout>
             </RelativeLayout>
 
             <RelativeLayout
