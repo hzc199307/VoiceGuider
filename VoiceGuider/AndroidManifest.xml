@@ -52,6 +52,10 @@
             android:label="@string/title_activity_city"
             android:screenOrientation="sensor" >
         </activity>
+        <activity
+            android:name="com.ne.voiceguider.activity.GuiderActivity"
+            android:label="@string/title_activity_guider" >
+        </activity>
     </application>
 
     <!-- 以下都是百度地图API所需 -->

@@ -24,6 +24,7 @@ public class VoiceGuiderApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		mInstance = this;
 		initEngineManager(this);
 	}
 

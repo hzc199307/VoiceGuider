@@ -51,6 +51,7 @@
             android:clickable="true"
             android:visibility="gone" />
 
+
         <LinearLayout
             android:id="@+id/city_scenelist"
             android:layout_width="fill_parent"

@@ -1,11 +1,17 @@
 package com.ne.voiceguider.activity;
 
+import java.util.ArrayList;
+
 import com.baidu.mapapi.BMapManager;
+import com.baidu.mapapi.map.ItemizedOverlay;
 import com.baidu.mapapi.map.MKOLUpdateElement;
 import com.baidu.mapapi.map.MKOfflineMap;
 import com.baidu.mapapi.map.MKOfflineMapListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.OverlayItem;
+import com.baidu.mapapi.map.PopupClickListener;
+import com.baidu.mapapi.map.PopupOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.R.id;
@@ -13,15 +19,19 @@ import com.ne.voiceguider.R.layout;
 import com.ne.voiceguider.R.menu;
 import com.ne.voiceguider.VoiceGuiderApplication;
 import com.ne.voiceguider.activity.HikingActivity.HikingCityOnClickListener;
+import com.ne.voiceguider.util.BMapUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
+import com.ne.voiceguider.util.OverlayUtil;
 import com.ne.voiceguider.view.RoundProgressBar;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,6 +46,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.os.Build;
 
 /**
@@ -46,9 +57,9 @@ import android.os.Build;
  * @date 2014年5月20日 下午3:01:52 
  *
  */
-public class CityActivity extends ActionBarActivity {
+public class CityActivity extends ActionBarActivity 
+{
 
-	int a;
 	private String TAG = "CityActivity";
 	private MapView mMapView = null;
 	private OfflineMapUtil mOfflineMapUtil = null;
@@ -61,6 +72,17 @@ public class CityActivity extends ActionBarActivity {
 	private ImageView city_scene_alldownload_button_imageView;
 	private Boolean isMapDownload;
 	private RelativeLayout city_scene_top_layout,city_scene_mapdownload_layout,city_scene_download_listview;
+	
+	private MapController mMapController;
+	/**
+	 * 地图上面插标
+	 */
+	private PopupOverlay pop = null;
+	private ArrayList<OverlayItem> mItems = null; 
+	private TextView popupText = null;
+	private MapView.LayoutParams layoutParam = null;
+	private OverlayItem mCurItem = null;
+	private OverlayUtil mOverlayUtil;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v("CityActivity", "onCreate");
@@ -74,10 +96,21 @@ public class CityActivity extends ActionBarActivity {
 
 		city_head();
 
+		initOverlay();
 
 	}
 
 
+	/**
+	 * 
+	 * @Title: initMap 
+	 * @Description: 
+	 * @author HeZhichao
+	 * @date 2014年5月20日 下午3:01:52 
+	 * @param 
+	 * @return void 
+	 * @throws
+	 */
 	public void initMap()
 	{
 		VoiceGuiderApplication app = (VoiceGuiderApplication)this.getApplication();
@@ -92,7 +125,7 @@ public class CityActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_city);
 		mMapView=(MapView)findViewById(R.id.city_scenemap);
 		//mMapView.setBuiltInZoomControls(true);//设置启用内置的缩放控件
-		MapController mMapController=mMapView.getController();
+		mMapController=mMapView.getController();
 		// 得到mMapView的控制权,可以用它控制和驱动平移和缩放
 		GeoPoint point = null;
 		Intent  intent = getIntent();
@@ -106,7 +139,8 @@ public class CityActivity extends ActionBarActivity {
 			Log.e(TAG,cityName+" "+cityId+" "+(cityUpdateInfo==null));
 			Log.v("intent",cityName);
 			point = mOfflineMapUtil.searchGeoPoint(cityName);
-			Log.v(TAG,"latE6:"+point.getLatitudeE6()+" ,lonE6"+point.getLongitudeE6());
+			if(point!=null)
+				Log.v(TAG,"latE6:"+point.getLatitudeE6()+" ,lonE6"+point.getLongitudeE6());
 		}else{
 			//设置中心点为天安门
 			point = new GeoPoint((int)(39.915* 1E6),(int)(116.404* 1E6));
@@ -115,12 +149,16 @@ public class CityActivity extends ActionBarActivity {
 		mMapController.setCenter(point);//设置地图中心点
 		mMapController.setZoom(12);//设置地图zoom级别
 		mMapController.setCompassMargin(90, 90);//设置指南针位置
+		/**
+         *  设置地图是否响应点击事件  .
+         */
+        mMapController.enableClick(true);
 	}
 
 	/**
 	 * 有关于界面切换显示的逻辑处理
 	 * @Title: list_maplayoutSwitch 
-	 * @Description: TODO
+	 * @Description: 
 	 * @author HeZhichao
 	 * @date 2014年5月20日
 	 * @param 
@@ -138,23 +176,26 @@ public class CityActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				Thread thread = new Thread(){
-					@Override
-					public void run(){
-						try {
-							Thread.currentThread().sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-						mMapView.setVisibility(View.INVISIBLE);
-					}
-				};
+//				Thread thread = new Thread(){//设置晚1s关闭显示 解决闪烁问题
+//					@Override
+//					public void run(){
+//						try {
+//							Thread.currentThread().sleep(100);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//						mMapView.setVisibility(View.INVISIBLE);
+//					}
+//				};
+//				thread.start();
 				city_scene_top_layout.getBackground().setAlpha(255);//完全不透明
 				city_scene_mapdownload_layout.setVisibility(View.VISIBLE);
 				city_scene_download_listview.setVisibility(View.VISIBLE);
+//				mMapController.setScrollGesturesEnabled(false);
+//				mMapController.setRotationGesturesEnabled(false);
+//				mMapController.setZoomGesturesEnabled(false);
+//				mMapController.setOverlookingGesturesEnabled(false);
+//				mMapView.setVisibility(View.INVISIBLE);
 
 			}
 		});
@@ -163,13 +204,26 @@ public class CityActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+				mMapView.setVisibility(View.VISIBLE);
 				city_scene_top_layout.getBackground().setAlpha(0);//完全透明的
 				city_scene_mapdownload_layout.setVisibility(View.INVISIBLE);
 				city_scene_download_listview.setVisibility(View.INVISIBLE);
-				mMapView.setVisibility(View.VISIBLE);
+				
 				city_scenelist_button.setVisibility(View.VISIBLE);
 				city_scenemap_button.setVisibility(View.VISIBLE);
+				Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
+					@Override
+					public void run(){
+						try {
+							Thread.currentThread().sleep(100);
+							mOverlayUtil.showSpan();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				thread.start();
+				
 			}
 		});
 
@@ -178,7 +232,7 @@ public class CityActivity extends ActionBarActivity {
 	/**
 	 * 地图下载的设置
 	 * @Title: mapDownload 
-	 * @Description: TODO
+	 * @Description: 
 	 * @author HeZhichao
 	 * @date 2014年5月21日 下午4:31:43 
 	 * @param 
@@ -201,7 +255,6 @@ public class CityActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if(isMapDownload)
 				{
 					Log.e(TAG,"stop download "+cityName+" "+cityId);
@@ -229,7 +282,7 @@ public class CityActivity extends ActionBarActivity {
 	/**
 	 * 
 	 * @Title: city_head 
-	 * @Description: TODO
+	 * @Description: 
 	 * @author HeZhichao
 	 * @date 2014年5月21日 下午7:06:35 
 	 * @param 
@@ -243,10 +296,49 @@ public class CityActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				CityActivity.this.finish();
 			}
 		});
+	}
+
+	/**
+	 * 地图覆盖物
+	 * @Title: initOverlay 
+	 * @Description: TODO
+	 * @author HeZhichao
+	 * @date 2014年5月22日 下午5:48:09 
+	 * @param 
+	 * @return void 
+	 * @throws
+	 */
+	public void initOverlay()
+	{
+
+		mOverlayUtil = new OverlayUtil(mMapView, this);
+		/**
+		 * 准备overlay 数据
+		 */
+		GeoPoint p1 = new GeoPoint ((int)(23.143637*1E6),(int)(113.274189*1E6));
+		OverlayItem item1 = new OverlayItem(p1,"广州美术馆","");
+		/**
+		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+		 */
+		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+
+		GeoPoint p2 = new GeoPoint ((int)(23.14274*1E6),(int)(113.269904*1E6));
+		OverlayItem item2 = new OverlayItem(p2,"明代古城墙","");
+		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+		/**
+		 * 将item 添加到overlay中
+		 * 注意： 同一个item只能add一次
+		 */
+		mOverlayUtil.addItem(item1);
+		mOverlayUtil.addItem(item2);
+		/**
+		 * 保存所有item，以便overlay在reset后重新添加
+		 */
+		mOverlayUtil.showAll();
+
 	}
 
 	@Override
@@ -346,6 +438,7 @@ public class CityActivity extends ActionBarActivity {
 
 		}
 	}
+
 
 	/**
 	 * 监控返回键
