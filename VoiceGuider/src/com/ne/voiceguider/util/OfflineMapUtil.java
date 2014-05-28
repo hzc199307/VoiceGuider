@@ -102,7 +102,9 @@ public class OfflineMapUtil {
 			mMKOLUpdateElement= getUpdateInfo(cityID);
 			Log.e("TAG","before start download status : "+(mMKOLUpdateElement==null?"null":mMKOLUpdateElement.status));
 			//没有完成才下载
-			if(mMKOLUpdateElement!=null&&mMKOLUpdateElement.status != MKOLUpdateElement.FINISHED)
+			if(mMKOLUpdateElement!=null&&mMKOLUpdateElement.status == MKOLUpdateElement.FINISHED)
+				;
+			else
 			{
 				mOffline.start(cityID);
 				Toast.makeText( mContext,"开始下载离线地图. cityid: "+cityID, Toast.LENGTH_SHORT)

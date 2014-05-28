@@ -422,12 +422,19 @@ public class CityActivity extends ActionBarActivity
 					Log.e(TAG,"downing "+update.ratio);
 					//					    stateView.setText(String.format("%s : %d%%", update.cityName, update.ratio));
 					//					    updateView();
+					if(update.ratio==100)
+					{
+						isMapDownload = false;
+						city_scene_alldownload_button_imageView.setImageResource(R.drawable.city_scene_download_button_loading);
+					}
 				}
 			}
 			break;
 			case MKOfflineMap.TYPE_NEW_OFFLINE:
 				//有新离线地图安装
 				Log.d("OfflineDemo", String.format("add offlinemap num:%d", state));
+//				isMapDownload = false;
+//				city_scene_alldownload_button_imageView.setImageResource(R.drawable.city_scene_download_button_loading);
 				break;
 			case MKOfflineMap.TYPE_VER_UPDATE:
 				// 版本更新提示
