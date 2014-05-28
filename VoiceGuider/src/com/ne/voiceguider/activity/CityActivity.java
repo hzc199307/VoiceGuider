@@ -34,10 +34,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.animation.AnimationUtils;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -47,6 +51,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import android.os.Build;
 
 /**
@@ -57,7 +62,7 @@ import android.os.Build;
  * @date 2014年5月20日 下午3:01:52 
  *
  */
-public class CityActivity extends ActionBarActivity 
+public class CityActivity extends ActionBarActivity implements OnGestureListener 
 {
 
 	private String TAG = "CityActivity";
@@ -70,19 +75,18 @@ public class CityActivity extends ActionBarActivity
 	private FrameLayout city_scene_mapdownload_button;
 	private RoundProgressBar city_scene_alldownload_button_roundProgressBar;
 	private ImageView city_scene_alldownload_button_imageView;
-	private Boolean isMapDownload;
+	private Boolean isMapDownload,isMapNow;
 	private RelativeLayout city_scene_top_layout,city_scene_mapdownload_layout,city_scene_download_listview;
-	
+
 	private MapController mMapController;
+
+	private GestureDetector detector;
+	private ViewFlipper viewFlipper;
 	/**
 	 * 地图上面插标
 	 */
-	private PopupOverlay pop = null;
-	private ArrayList<OverlayItem> mItems = null; 
-	private TextView popupText = null;
-	private MapView.LayoutParams layoutParam = null;
-	private OverlayItem mCurItem = null;
 	private OverlayUtil mOverlayUtil;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.v("CityActivity", "onCreate");
@@ -123,6 +127,7 @@ public class CityActivity extends ActionBarActivity
 		}
 		//注意：请在试用setContentView前初始化BMapManager对象，否则会报错
 		setContentView(R.layout.activity_city);
+		initFlipper();
 		mMapView=(MapView)findViewById(R.id.city_scenemap);
 		//mMapView.setBuiltInZoomControls(true);//设置启用内置的缩放控件
 		mMapController=mMapView.getController();
@@ -150,9 +155,25 @@ public class CityActivity extends ActionBarActivity
 		mMapController.setZoom(12);//设置地图zoom级别
 		mMapController.setCompassMargin(90, 90);//设置指南针位置
 		/**
-         *  设置地图是否响应点击事件  .
-         */
-        mMapController.enableClick(true);
+		 *  设置地图是否响应点击事件  .
+		 */
+		mMapController.enableClick(true);
+	}
+	/**
+	 * 初始化ViewFlipper   （实现接口OnGestureListener也是为了ViewFlipper）
+	 * @Title: initFlipper 
+	 * @Description: TODO
+	 * @author HeZhichao
+	 * @date 2014年5月28日 下午5:20:44 
+	 * @param 
+	 * @return void 
+	 * @throws
+	 */
+	protected void initFlipper() {
+		viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+		viewFlipper.addView(LayoutInflater.from(this).inflate(R.layout.fragment_city1, null));
+		viewFlipper.addView(LayoutInflater.from(this).inflate(R.layout.fragment_city2, null));
+		detector = new GestureDetector(this);
 	}
 
 	/**
@@ -168,6 +189,7 @@ public class CityActivity extends ActionBarActivity
 	public void list_maplayoutSwitch()
 	{
 
+		isMapNow = false;
 		city_scene_top_layout = (RelativeLayout)findViewById(R.id.city_scene_top_layout);
 		city_scene_mapdownload_layout = (RelativeLayout)findViewById(R.id.city_scene_mapdownload_layout);
 		city_scene_download_listview = (RelativeLayout)findViewById(R.id.city_scene_download_listview);
@@ -176,27 +198,11 @@ public class CityActivity extends ActionBarActivity
 
 			@Override
 			public void onClick(View arg0) {
-//				Thread thread = new Thread(){//设置晚1s关闭显示 解决闪烁问题
-//					@Override
-//					public void run(){
-//						try {
-//							Thread.currentThread().sleep(100);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//						mMapView.setVisibility(View.INVISIBLE);
-//					}
-//				};
-//				thread.start();
-				city_scene_top_layout.getBackground().setAlpha(255);//完全不透明
-				city_scene_mapdownload_layout.setVisibility(View.VISIBLE);
-				city_scene_download_listview.setVisibility(View.VISIBLE);
-//				mMapController.setScrollGesturesEnabled(false);
-//				mMapController.setRotationGesturesEnabled(false);
-//				mMapController.setZoomGesturesEnabled(false);
-//				mMapController.setOverlookingGesturesEnabled(false);
-//				mMapView.setVisibility(View.INVISIBLE);
-
+				if(isMapNow == true)
+				{
+					leftToRight();
+					isMapNow = false;
+				}
 			}
 		});
 		city_scenemap_button = (Button)findViewById(R.id.city_scenemap_button);
@@ -204,28 +210,28 @@ public class CityActivity extends ActionBarActivity
 
 			@Override
 			public void onClick(View arg0) {
-				mMapView.setVisibility(View.VISIBLE);
-				city_scene_top_layout.getBackground().setAlpha(0);//完全透明的
-				city_scene_mapdownload_layout.setVisibility(View.INVISIBLE);
-				city_scene_download_listview.setVisibility(View.INVISIBLE);
-				
-				city_scenelist_button.setVisibility(View.VISIBLE);
-				city_scenemap_button.setVisibility(View.VISIBLE);
-				Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
-					@Override
-					public void run(){
-						try {
-							Thread.currentThread().sleep(100);
-							mOverlayUtil.showSpan();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+				if(isMapNow == false)
+				{
+					RightToLeft();
+					Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
+						@Override
+						public void run(){
+							try {
+								Thread.currentThread().sleep(100);
+								mOverlayUtil.showSpan();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
-					}
-				};
-				thread.start();
-				
+					};
+					thread.start();
+					isMapNow = true;
+				}
+
+
 			}
 		});
+
 
 	}
 
@@ -433,8 +439,8 @@ public class CityActivity extends ActionBarActivity
 			case MKOfflineMap.TYPE_NEW_OFFLINE:
 				//有新离线地图安装
 				Log.d("OfflineDemo", String.format("add offlinemap num:%d", state));
-//				isMapDownload = false;
-//				city_scene_alldownload_button_imageView.setImageResource(R.drawable.city_scene_download_button_loading);
+				//				isMapDownload = false;
+				//				city_scene_alldownload_button_imageView.setImageResource(R.drawable.city_scene_download_button_loading);
 				break;
 			case MKOfflineMap.TYPE_VER_UPDATE:
 				// 版本更新提示
@@ -458,5 +464,81 @@ public class CityActivity extends ActionBarActivity
 			finish();
 		}
 		return true;
+	}
+
+
+	////// 以下是OnGestureListener接口的函数   
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		//将该Activity上的触碰事件交给GestureDetector处理
+		return detector.onTouchEvent(event);
+	}
+	@Override
+	/***
+	 * 滑动手势
+	 */
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		Log.v("", "onFling");
+		/*
+		 * 如果第二个触点事件的X座标大于第一个触点事件的X座标超过FLIP_DISTANCE 
+		 * 也就是手势从左向右滑。
+		 */
+		if (e2.getX() - e1.getX() > 50) {
+			leftToRight();
+			return true;
+
+		} 
+		/*
+		 * 如果第 一个触点事件的X座标大于第二个触点事件的X座标超过FLIP_DISTANCE 
+		 * 也就是手势从右向左滑。
+		 */
+		else if (e1.getX() - e2.getX() > 50) {
+
+			RightToLeft();
+			return true;
+
+		}
+		return false;
+	}
+	void leftToRight()
+	{
+		viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.rightin));
+		viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.rightout));
+		viewFlipper.showNext();
+		isMapNow = !isMapNow;
+	}
+
+	void RightToLeft()
+	{
+		viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.leftin));
+		viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.leftout));
+		viewFlipper.showPrevious();
+		isMapNow = !isMapNow;
+	}
+	@Override
+	public void onLongPress(MotionEvent e) {
+	}
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return false;
+	}
+	@Override
+	public void onShowPress(MotionEvent e) {	
+	}
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return false;
 	}
 }

@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android_custom="http://schemas.android.com/apk/res/com.ne.voiceguider"
+    android:id="@+id/city_scenelist"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/city_scene_top_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#ffffff" >
+
+        <!-- android:background="#00000000"透明色 -->
+
+        <!-- <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/city_scenelist_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="12"
+                android:background="@drawable/button_style"
+                android:padding="10dip"
+                android:text="景点列表"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/city_scenemap_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="12"
+                android:background="@drawable/button_style"
+                android:padding="10dip"
+                android:text="景点地图"
+                android:textSize="12sp" />
+        </LinearLayout>-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/city_scene_mapdownload_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="#ffffff" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="离线地图"
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:id="@+id/city_scene_mapdownload_button"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp" >
+
+            <com.ne.voiceguider.view.RoundProgressBar
+                android:id="@+id/city_scene_alldownload_button_roundProgressBar"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android_custom:roundColor="#00000000"
+                android_custom:roundProgressColor="#C6E2FF"
+                android_custom:roundWidth="2dip"
+                android_custom:textIsDisplayable="false" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <ImageView
+                    android:id="@+id/city_scene_alldownload_button_imageView"
+                    android:layout_width="20dip"
+                    android:layout_height="20dip"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/city_scene_download_button_undone" />
+            </RelativeLayout>
+        </FrameLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/city_scene_download_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:visibility="visible" >
+    </RelativeLayout>
+
+</LinearLayout>

@@ -10,5 +10,6 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_city">CityActivity</string>
     <string name="title_activity_guider">GuiderActivity</string>
+    <string name="title_activity_city2">City2Activity</string>
 
 </resources>

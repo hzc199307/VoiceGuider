@@ -56,6 +56,10 @@
             android:name="com.ne.voiceguider.activity.GuiderActivity"
             android:label="@string/title_activity_guider" >
         </activity>
+        <activity
+            android:name="com.ne.voiceguider.City2Activity"
+            android:label="@string/title_activity_city2" >
+        </activity>
     </application>
 
     <!-- 以下都是百度地图API所需 -->

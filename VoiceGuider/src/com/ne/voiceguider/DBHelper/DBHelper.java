@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 /**
@@ -94,11 +95,13 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * @throws IOException
 	 */
 	public boolean createDataBase() throws IOException {
-		boolean dbExist = checkDataBase();
+		boolean dbExist = checkDataBase();//boolean dbExist = false;//
 		if (dbExist) {
 			// 数据库已存在，不做任何操作
+			Log.v("", "数据库没导入");
 		} else {
 			// 创建数据库
+			Log.v("", "数据库导入了");
 			try {
 				File dir = new File(DB_PATH);
 				if (!dir.exists()) {
