@@ -1,48 +1,47 @@
 package com.ne.voiceguider.bean;
 
-/**
- * 大景点实体类
- * @ClassName: BigScene 
- * @Description: TODO 
- * @author HeZhichao
- * @date 2014年5月21日 下午6:58:04 
- *
- */
 public class BigScene {
-	private String bigSceneName;//景点名称
-	private int bigSceneID;//景点ID
-	private int cityID;//所属城市ID
-	private double longitude;//经度
-	private double latitude;//纬度
+	private int bigSceneId=-1;
+	private String bigSceneName;
+	private String bigScenePath;
+	private int bigSceneLatitude;
+	private int bigSceneLongitude;
+	private int fkCityID;
+	public int getBigSceneId() {
+		return bigSceneId;
+	}
+	public void setBigSceneId(int bigSceneId) {
+		this.bigSceneId = bigSceneId;
+	}
 	public String getBigSceneName() {
 		return bigSceneName;
 	}
 	public void setBigSceneName(String bigSceneName) {
 		this.bigSceneName = bigSceneName;
 	}
-	public int getBigSceneID() {
-		return bigSceneID;
+	public String getBigScenePath() {
+		return bigScenePath;
 	}
-	public void setBigSceneID(int bigSceneID) {
-		this.bigSceneID = bigSceneID;
+	public void setBigScenePath(String bigScenePath) {
+		this.bigScenePath = bigScenePath;
 	}
-	public int getCityID() {
-		return cityID;
+	public int getBigSceneLatitude() {
+		return bigSceneLatitude;
 	}
-	public void setCityID(int cityID) {
-		this.cityID = cityID;
+	public void setBigSceneLatitude(int bigSceneLatitude) {
+		this.bigSceneLatitude = bigSceneLatitude;
 	}
-	public double getLongitude() {
-		return longitude;
+	public int getBigSceneLongitude() {
+		return bigSceneLongitude;
 	}
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public void setBigSceneLongitude(int bigSceneLongitude) {
+		this.bigSceneLongitude = bigSceneLongitude;
 	}
-	public double getLatitude() {
-		return latitude;
+	public int getFkCityID() {
+		return fkCityID;
 	}
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+	public void setFkCityID(int fkCityID) {
+		this.fkCityID = fkCityID;
 	}
 	
 }
