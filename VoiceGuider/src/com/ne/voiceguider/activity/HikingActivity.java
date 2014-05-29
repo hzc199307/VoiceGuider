@@ -50,18 +50,6 @@ public class HikingActivity extends ActionBarActivity {
 			}
 		});
 	}
-	class HikingCityOnClickListener implements RelativeLayout.OnClickListener
-	{
-
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			Intent intent = new Intent(HikingActivity.this,
-					CityActivity.class); // 跳转到主页面
-			startActivity(intent);
-		}
-
-	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

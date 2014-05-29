@@ -9,6 +9,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TabHost;
 
 /**
@@ -20,13 +21,16 @@ import android.widget.TabHost;
  *
  */
 public class TabsActivity extends TabActivity {
+	private final String TAG = "TabsActivity";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO 自动生成的方法存根
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_tabs);
 
-		Log.v("1","1");
+		Log.v(TAG,"onCreate");
 		TabHost mTabHost = getTabHost();
 		mTabHost.setup();
 
@@ -52,4 +56,10 @@ public class TabsActivity extends TabActivity {
 		mTabHost.setCurrentTabByTag("hiking");
 	}
 
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.v(TAG,"onDestroy");
+	}
 }

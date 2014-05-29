@@ -18,7 +18,6 @@ import com.ne.voiceguider.R.id;
 import com.ne.voiceguider.R.layout;
 import com.ne.voiceguider.R.menu;
 import com.ne.voiceguider.VoiceGuiderApplication;
-import com.ne.voiceguider.activity.HikingActivity.HikingCityOnClickListener;
 import com.ne.voiceguider.util.BMapUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
