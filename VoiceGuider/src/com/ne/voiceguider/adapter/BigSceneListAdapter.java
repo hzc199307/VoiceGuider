@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.ne.voiceguider.R;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +14,24 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ne.voiceguider.bean.BigScene;
+import com.ne.voiceguider.bean.CityBean;
+import com.ne.voiceguider.dao.CitySceneDao;
 
 public class BigSceneListAdapter extends BaseAdapter{
 
 
+	private final String TAG = "BigSceneListAdapter";
 	private List<BigScene> listData = null;
 	private LayoutInflater inflater = null;
 
+	public BigSceneListAdapter(Context context,int cityID) {
+		CitySceneDao mCitySceneDao = new CitySceneDao(context);
+		CityBean mCityBean = new CityBean();
+		mCityBean.setCityID(cityID);
+		setListData(mCitySceneDao.getBigScenes(mCityBean));
+		inflater = LayoutInflater.from(context);
+		Log.v(TAG, listData.size()+"");
+	}
 	public BigSceneListAdapter(Context context,List<BigScene> list) {
 		setListData(list);
 		inflater = LayoutInflater.from(context);

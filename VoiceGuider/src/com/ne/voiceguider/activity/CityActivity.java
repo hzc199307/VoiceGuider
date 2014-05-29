@@ -18,6 +18,7 @@ import com.ne.voiceguider.R.id;
 import com.ne.voiceguider.R.layout;
 import com.ne.voiceguider.R.menu;
 import com.ne.voiceguider.VoiceGuiderApplication;
+import com.ne.voiceguider.adapter.BigSceneListAdapter;
 import com.ne.voiceguider.util.BMapUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
@@ -48,6 +49,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -75,12 +77,14 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private RoundProgressBar city_scene_alldownload_button_roundProgressBar;
 	private ImageView city_scene_alldownload_button_imageView;
 	private Boolean isMapDownload,isMapNow;
-	private RelativeLayout city_scene_top_layout,city_scene_mapdownload_layout,city_scene_download_listview;
+	private RelativeLayout city_scene_top_layout,city_scene_mapdownload_layout;
 
 	private MapController mMapController;
 
 	private GestureDetector detector;
 	private ViewFlipper viewFlipper;
+	
+	private ListView city_scene_download_listview;
 	/**
 	 * 地图上面插标
 	 */
@@ -101,9 +105,26 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 
 		initOverlay();
 
+		bigSceneListview();
 	}
 
 
+	/**
+	 * 
+	 * @Title: bigSceneListview 
+	 * @Description: TODO
+	 * @author HeZhichao
+	 * @date 2014年5月29日 下午7:01:59 
+	 * @param 
+	 * @return void 
+	 * @throws
+	 */
+	void bigSceneListview()
+	{
+		city_scene_download_listview = (ListView)findViewById(R.id.city_scene_download_listview);
+		city_scene_download_listview.setAdapter(new BigSceneListAdapter(this,1));
+		Log.v(TAG, "bigSceneListview");
+	}
 	/**
 	 * 
 	 * @Title: initMap 
@@ -191,7 +212,6 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		isMapNow = false;
 		city_scene_top_layout = (RelativeLayout)findViewById(R.id.city_scene_top_layout);
 		city_scene_mapdownload_layout = (RelativeLayout)findViewById(R.id.city_scene_mapdownload_layout);
-		city_scene_download_listview = (RelativeLayout)findViewById(R.id.city_scene_download_listview);
 		city_scenelist_button = (Button)findViewById(R.id.city_scenelist_button);
 		city_scenelist_button.setOnClickListener(new Button.OnClickListener() {
 
