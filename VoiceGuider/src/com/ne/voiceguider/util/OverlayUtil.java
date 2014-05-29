@@ -122,8 +122,8 @@ public class OverlayUtil {
 	{
 		Log.v(TAG, mOverlay.getLatSpanE6()+" "+mOverlay.getLonSpanE6());
 		mMapController.setCenter(mOverlay.getCenter());//设置地图中心点
-		mMapController.zoomToSpan(mOverlay.getLatSpanE6(), mOverlay.getLonSpanE6());//改变地图范围
-		//mMapController.zoomToSpanWithAnimation(mOverlay.getLatSpanE6(), mOverlay.getLonSpanE6(),0);//改变地图范围
+		//mMapController.zoomToSpan(mOverlay.getLatSpanE6(), mOverlay.getLonSpanE6());//改变地图范围
+		mMapController.zoomToSpanWithAnimation(mOverlay.getLatSpanE6(), mOverlay.getLonSpanE6(),1500);//改变地图范围
 	}
 
 	public class MyTextItem extends TextItem

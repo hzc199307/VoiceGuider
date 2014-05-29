@@ -1,4 +1,4 @@
-package com.ne.voiceguider.Adapter;
+package com.ne.voiceguider.adapter;
 
 import java.util.List;
 import java.util.ArrayList;
