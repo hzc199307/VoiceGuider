@@ -11,8 +11,8 @@ public class CityBean implements Serializable{
 	private int CityID=-1;
 	private String CityName;
 	private String dirPath;
-	private float longtitude;
-	private float latitude;
+	private double longtitude;
+	private double latitude;
 	public int getCityID() {
 		return CityID;
 	}
@@ -31,16 +31,16 @@ public class CityBean implements Serializable{
 	public void setDirPath(String dirPath) {
 		this.dirPath = dirPath;
 	}
-	public float getLongtitude() {
+	public double getLongtitude() {
 		return longtitude;
 	}
-	public void setLongtitude(float longtitude) {
+	public void setLongtitude(double longtitude) {
 		this.longtitude = longtitude;
 	}
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(float latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 }

@@ -4,8 +4,8 @@ public class SmallScene {
 	private int smallSceneID;
 	private String smallSceneName;
 	private String smallScenePath;
-	private  float smallSceneLatitude;
-	private float smallSceneLongtitude;
+	private double smallSceneLatitude;
+	private double smallSceneLongtitude;
 	private int fkBigSceneId;
 	private int fkCityID;
 	private MusicInfoBean musicInfo;
@@ -34,16 +34,16 @@ public class SmallScene {
 	public void setSmallScenePath(String smallScenePath) {
 		this.smallScenePath = smallScenePath;
 	}
-	public float getSmallSceneLatitude() {
+	public double getSmallSceneLatitude() {
 		return smallSceneLatitude;
 	}
-	public void setSmallSceneLatitude(float smallSceneLatitude) {
+	public void setSmallSceneLatitude(double smallSceneLatitude) {
 		this.smallSceneLatitude = smallSceneLatitude;
 	}
-	public float getSmallSceneLongtitude() {
+	public double getSmallSceneLongtitude() {
 		return smallSceneLongtitude;
 	}
-	public void setSmallSceneLongtitude(float smallSceneLongtitude) {
+	public void setSmallSceneLongtitude(double smallSceneLongtitude) {
 		this.smallSceneLongtitude = smallSceneLongtitude;
 	}
 	public int getFkBigSceneId() {

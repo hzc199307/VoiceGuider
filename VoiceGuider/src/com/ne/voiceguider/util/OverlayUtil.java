@@ -1,6 +1,7 @@
 package com.ne.voiceguider.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +30,10 @@ import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.GuiderActivity;
 import com.ne.voiceguider.activity.HikingActivity;
+import com.ne.voiceguider.bean.BigScene;
+import com.ne.voiceguider.bean.CityBean;
+import com.ne.voiceguider.bean.SmallScene;
+import com.ne.voiceguider.dao.CitySceneDao;
 
 /**
  * 
@@ -38,10 +43,12 @@ import com.ne.voiceguider.activity.HikingActivity;
  * @date 2014年5月23日 下午12:13:30 
  *
  */
-public class OverlayUtil {
+public class OverlayUtil<Class> {
 
 	private String TAG = "OverlayUtil";
 
+	
+	private List<Class> listObject;
 	/**
 	 * 地图上面插标
 	 */
@@ -89,6 +96,43 @@ public class OverlayUtil {
 		popupRight = (View) viewCache.findViewById(R.id.popright);
 		popupText =(TextView) viewCache.findViewById(R.id.textcache);
 
+	}
+	
+	public void setListObject(List<Class> listObject)
+	{
+		this.listObject = listObject;
+
+		int size = listObject.size();
+		/**
+		 * 准备overlay 数据
+		 */
+		for(int i=0;i<size;i++)
+		{
+			Class mObject = listObject.get(i);
+			GeoPoint gp ;
+			OverlayItem item;
+			if(mObject instanceof BigScene)
+			{
+				BigScene mBigScene = (BigScene)mObject;
+				Log.v(mBigScene.getBigSceneLatitude()+"",mBigScene.getBigSceneLongitude()+"");
+				gp= new GeoPoint ((int)(mBigScene.getBigSceneLatitude()*1E6),(int)(mBigScene.getBigSceneLongitude()*1E6));
+				item = new OverlayItem(gp,mBigScene.getBigSceneName(),"");
+			}
+			else
+			{
+				SmallScene mSmallScene = (SmallScene)mObject;
+				Log.v(mSmallScene.getSmallSceneLatitude()+"",mSmallScene.getSmallSceneLongtitude()+"");
+				gp= new GeoPoint ((int)(mSmallScene.getSmallSceneLatitude()*1E6),(int)(mSmallScene.getSmallSceneLongtitude()*1E6));
+				item = new OverlayItem(gp,mSmallScene.getSmallSceneName(),"");
+			}
+			item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+			addItem(item);
+		}
+		
+		/**
+		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+		 */
+		
 	}
 	/*
 	 * 跳转到大景点下的小景点详情页面 

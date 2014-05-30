@@ -3,6 +3,9 @@ package com.ne.voiceguider.fragment;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.HikingActivity;
+import com.ne.voiceguider.adapter.BigSceneListAdapter;
+import com.ne.voiceguider.adapter.CityBeanListAdapter;
+import com.ne.voiceguider.bean.CityBean;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -12,9 +15,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 /**
@@ -27,9 +34,12 @@ import android.widget.RelativeLayout;
  */
 public class HikingFragment extends Fragment {
 
+	private final String TAG = "HikingFragment";
 	int mNum;  
-	Context mContext ; 
+	private Context mContext ; 
 	private RelativeLayout hiking_city,hiking_Location ;
+	private ListView citybean_listview = null;
+	private CityBeanListAdapter mCityBeanListAdapter = null;
 	@Override  
 	public void onCreate(Bundle savedInstanceState) {  
 		super.onCreate(savedInstanceState);  
@@ -41,6 +51,27 @@ public class HikingFragment extends Fragment {
 			Bundle savedInstanceState) {   
 		mContext = inflater.getContext();
 		View view = inflater.inflate(R.layout.fragment_hiking, container, false);
+
+		citybean_listview = (ListView)view.findViewById(R.id.citybean_listview);
+		mCityBeanListAdapter = new CityBeanListAdapter(mContext);
+		citybean_listview.setAdapter(mCityBeanListAdapter);
+		Log.v(TAG, "citybean_listview");
+
+		citybean_listview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				CityBean mCityBean = mCityBeanListAdapter.getItem(position);
+				Intent intent = new Intent(mContext,CityActivity.class); // 跳转到城市景点详情页面 
+				Bundle bundle = new Bundle();                           //创建Bundle对象   
+				bundle.putString("cityName", mCityBean.getCityName());     //装入数据  
+				bundle.putInt("cityID", mCityBean.getCityID());
+				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
+				startActivity(intent);                                     //开始切换 
+			}
+		});
+
 		hiking_Location = (RelativeLayout)view.findViewById(R.id.hiking_Location);
 		hiking_Location.setOnClickListener(new View.OnClickListener() {
 
@@ -68,18 +99,6 @@ public class HikingFragment extends Fragment {
 					}
 				});
 				builder.create().show();
-			}
-		});
-		hiking_city = (RelativeLayout)view.findViewById(R.id.hiking_city);
-		hiking_city.setOnClickListener(new View.OnClickListener() {
-
-			@Override //TODO
-			public void onClick(View arg0) {
-				Intent intent = new Intent(mContext,CityActivity.class); // 跳转到城市景点详情页面 
-				Bundle bundle = new Bundle();                           //创建Bundle对象   
-				bundle.putString("cityName", "广州市");     //装入数据   
-				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
-				startActivity(intent);                                     //开始切换 
 			}
 		});
 		return view;  

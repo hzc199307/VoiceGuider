@@ -1,14 +1,22 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#ffffff"
     android:orientation="vertical"
-    android:background="@drawable/splash"
-     >
+    android:theme="@android:style/Theme.NoTitleBar" >
+
+    <ImageView
+        android:id="@+id/helloImage"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splash" />
 
     <TextView
         android:id="@+id/hello"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+         />
 
-</LinearLayout>
+</FrameLayout>

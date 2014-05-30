@@ -4,8 +4,8 @@ public class BigScene {
 	private int bigSceneId=-1;
 	private String bigSceneName;
 	private String bigScenePath;
-	private int bigSceneLatitude;
-	private int bigSceneLongitude;
+	private double bigSceneLatitude;
+	private double bigSceneLongitude;
 	private int fkCityID;
 	public int getBigSceneId() {
 		return bigSceneId;
@@ -25,16 +25,16 @@ public class BigScene {
 	public void setBigScenePath(String bigScenePath) {
 		this.bigScenePath = bigScenePath;
 	}
-	public int getBigSceneLatitude() {
+	public double getBigSceneLatitude() {
 		return bigSceneLatitude;
 	}
-	public void setBigSceneLatitude(int bigSceneLatitude) {
+	public void setBigSceneLatitude(double bigSceneLatitude) {
 		this.bigSceneLatitude = bigSceneLatitude;
 	}
-	public int getBigSceneLongitude() {
+	public double getBigSceneLongitude() {
 		return bigSceneLongitude;
 	}
-	public void setBigSceneLongitude(int bigSceneLongitude) {
+	public void setBigSceneLongitude(double bigSceneLongitude) {
 		this.bigSceneLongitude = bigSceneLongitude;
 	}
 	public int getFkCityID() {

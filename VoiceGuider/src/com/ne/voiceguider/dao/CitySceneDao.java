@@ -16,7 +16,7 @@ import com.ne.voiceguider.bean.SmallScene;
 public class CitySceneDao {
 	Context mContext;
 	SQLiteDatabase db;
-	private String tag="ManagerDao";
+	private String tag="CitySceneDao";
 	public CitySceneDao(Context context){
 		this.mContext=context;
 		db=mContext.openOrCreateDatabase
@@ -47,8 +47,8 @@ public class CitySceneDao {
 				sScene.setSmallSceneID(cr.getInt(1));
 				sScene.setSmallSceneName(cr.getString(2));
 				sScene.setSmallScenePath(cr.getString(3));
-				sScene.setSmallSceneLatitude(cr.getFloat(4));
-				sScene.setSmallSceneLongtitude(cr.getFloat(5));
+				sScene.setSmallSceneLatitude(cr.getDouble(4));
+				sScene.setSmallSceneLongtitude(cr.getDouble(5));
 				MusicInfoBean mib=new MusicInfoBean();
 				mib.setMusicPath(cr.getString(3));
 				mib.setName(cr.getString(2));
@@ -82,8 +82,8 @@ public class CitySceneDao {
 				bs.setBigSceneId(cr.getInt(0));
 				bs.setBigSceneName(cr.getString(1));
 				bs.setBigScenePath(cr.getString(2));
-				bs.setBigSceneLatitude(cr.getInt(3));
-				bs.setBigSceneLongitude(cr.getInt(4));
+				bs.setBigSceneLatitude(cr.getDouble(3));
+				bs.setBigSceneLongitude(cr.getDouble(4));
 				bs.setFkCityID(cr.getInt(5));
 				listBigScene.add(bs);
 				cr.moveToNext();
@@ -106,8 +106,8 @@ public class CitySceneDao {
 				cb.setCityID(cr.getInt(0));
 				cb.setCityName(cr.getString(1));
 				cb.setDirPath(cr.getString(2));
-				cb.setLatitude(cr.getFloat(3));
-				cb.setLongtitude(cr.getFloat(4));
+				cb.setLatitude(cr.getDouble(3));
+				cb.setLongtitude(cr.getDouble(4));
 				listCity.add(cb);
 				Log.v(tag, "÷¥––ÕÍ¡À");
 				cr.moveToNext();

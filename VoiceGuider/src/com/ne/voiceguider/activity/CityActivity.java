@@ -19,6 +19,9 @@ import com.ne.voiceguider.R.layout;
 import com.ne.voiceguider.R.menu;
 import com.ne.voiceguider.VoiceGuiderApplication;
 import com.ne.voiceguider.adapter.BigSceneListAdapter;
+import com.ne.voiceguider.bean.BigScene;
+import com.ne.voiceguider.bean.CityBean;
+import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.util.BMapUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
@@ -45,6 +48,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,6 +57,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import android.widget.AdapterView.OnItemClickListener;
 import android.os.Build;
 
 /**
@@ -70,7 +75,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private MapView mMapView = null;
 	private OfflineMapUtil mOfflineMapUtil = null;
 	private String cityName = null;
-	private int cityId = -1;
+	private int cityID,cityDownloadId = -1;
 	private MKOLUpdateElement cityUpdateInfo = null;
 	private Button city_scenelist_button,city_scenemap_button,city_head_back;
 	private FrameLayout city_scene_mapdownload_button;
@@ -85,6 +90,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private ViewFlipper viewFlipper;
 	
 	private ListView city_scene_download_listview;
+	private BigSceneListAdapter mBigSceneListAdapter = null;
 	/**
 	 * 地图上面插标
 	 */
@@ -122,8 +128,23 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	void bigSceneListview()
 	{
 		city_scene_download_listview = (ListView)findViewById(R.id.city_scene_download_listview);
-		city_scene_download_listview.setAdapter(new BigSceneListAdapter(this,1));
-		Log.v(TAG, "bigSceneListview");
+		mBigSceneListAdapter = new BigSceneListAdapter(this,cityID);
+		city_scene_download_listview.setAdapter(mBigSceneListAdapter);
+		city_scene_download_listview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				BigScene mBigScene = mBigSceneListAdapter.getItem(position);
+				Intent intent = new Intent(CityActivity.this,GuiderActivity.class); // 跳转到城市景点详情页面 
+				Bundle bundle = new Bundle();                           //创建Bundle对象   
+				bundle.putString("bigSceneName", mBigScene.getBigSceneName());     //装入数据  
+				bundle.putInt("bigSceneID", mBigScene.getBigSceneId());
+				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
+				startActivity(intent);                                     //开始切换 
+			}
+		});
+		Log.v(TAG, "bigSceneListview()");
 	}
 	/**
 	 * 
@@ -159,9 +180,10 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 			//当用intent参数时，设置中心点为指定点
 			Bundle b = intent.getExtras();
 			cityName = b.getString("cityName");
-			cityId = mOfflineMapUtil.search(cityName);
-			cityUpdateInfo = mOfflineMapUtil.getUpdateInfo(cityId);
-			Log.e(TAG,cityName+" "+cityId+" "+(cityUpdateInfo==null));
+			cityID = b.getInt("cityID");
+			cityDownloadId = mOfflineMapUtil.search(cityName);
+			cityUpdateInfo = mOfflineMapUtil.getUpdateInfo(cityDownloadId);
+			Log.e(TAG,cityName+" "+cityDownloadId+" "+(cityUpdateInfo==null));
 			Log.v("intent",cityName);
 			point = mOfflineMapUtil.searchGeoPoint(cityName);
 			if(point!=null)
@@ -282,8 +304,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 			public void onClick(View v) {
 				if(isMapDownload)
 				{
-					Log.e(TAG,"stop download "+cityName+" "+cityId);
-					if(mOfflineMapUtil.pause(cityId))
+					Log.e(TAG,"stop download "+cityName+" "+cityDownloadId);
+					if(mOfflineMapUtil.pause(cityDownloadId))
 					{
 						isMapDownload = false;
 						//city_scene_alldownload_button_imageView.setBackgroundResource(R.drawable.city_scene_download_button_loading);
@@ -292,8 +314,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				}
 				else
 				{
-					Log.e(TAG,"start download "+cityName+" "+cityId);
-					if(mOfflineMapUtil.start(cityId))
+					Log.e(TAG,"start download "+cityName+" "+cityDownloadId);
+					if(mOfflineMapUtil.start(cityDownloadId))
 					{
 						isMapDownload = true;
 						city_scene_alldownload_button_imageView.setImageResource(R.drawable.city_scene_download_button_pause);
@@ -340,25 +362,30 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	{
 
 		mOverlayUtil = new OverlayUtil(mMapView, this);
-		/**
-		 * 准备overlay 数据
-		 */
-		GeoPoint p1 = new GeoPoint ((int)(23.143637*1E6),(int)(113.274189*1E6));
-		OverlayItem item1 = new OverlayItem(p1,"广州美术馆","");
-		/**
-		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
-		 */
-		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
-
-		GeoPoint p2 = new GeoPoint ((int)(23.14274*1E6),(int)(113.269904*1E6));
-		OverlayItem item2 = new OverlayItem(p2,"明代古城墙","");
-		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
-		/**
-		 * 将item 添加到overlay中
-		 * 注意： 同一个item只能add一次
-		 */
-		mOverlayUtil.addItem(item1);
-		mOverlayUtil.addItem(item2);
+		
+		CityBean mCityBean = new CityBean();
+		mCityBean.setCityID(cityID);
+		CitySceneDao mCitySceneDao = new CitySceneDao(this);
+		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(mCityBean));
+//		/**
+//		 * 准备overlay 数据
+//		 */
+//		GeoPoint p1 = new GeoPoint ((int)(23.143637*1E6),(int)(113.274189*1E6));
+//		OverlayItem item1 = new OverlayItem(p1,"广州美术馆","");
+//		/**
+//		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+//		 */
+//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+//
+//		GeoPoint p2 = new GeoPoint ((int)(23.14274*1E6),(int)(113.269904*1E6));
+//		OverlayItem item2 = new OverlayItem(p2,"明代古城墙","");
+//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+//		/**
+//		 * 将item 添加到overlay中
+//		 * 注意： 同一个item只能add一次
+//		 */
+//		mOverlayUtil.addItem(item1);
+//		mOverlayUtil.addItem(item2);
 		/**
 		 * 保存所有item，以便overlay在reset后重新添加
 		 */
@@ -369,7 +396,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onStart(){
 		if(isMapDownload)
-			mOfflineMapUtil.start(cityId);
+			mOfflineMapUtil.start(cityDownloadId);
 		Log.v("CityActivity", "onStart");
 		super.onStart();
 	}
@@ -377,7 +404,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onDestroy(){
 		Log.v("CityActivity", "onDestroy");
-		mOfflineMapUtil.pause(cityId);
+		mOfflineMapUtil.pause(cityDownloadId);
 		mOfflineMapUtil.destroy();//destroy的顺序一定不能改
 		if(mMapView!=null)
 		{

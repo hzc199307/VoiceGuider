@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -41,7 +42,6 @@ public class FirstActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_first);
-		
 		Log.v(TAG,"onCreate");
 		Thread splashTread = new Thread() {
 			@Override
