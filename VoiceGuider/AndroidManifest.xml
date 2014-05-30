@@ -53,9 +53,7 @@
         </activity>
         <activity
             android:name="com.ne.voiceguider.activity.CityActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/title_activity_city"
-            android:screenOrientation="sensor" >
+            android:label="@string/title_activity_city" >
         </activity>
         <activity
             android:name="com.ne.voiceguider.activity.GuiderActivity"
@@ -69,13 +67,15 @@
             android:name="com.ne.voiceguider.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
     </application>
 
     <!-- 以下都是百度地图API所需 -->
-    <meta-data
-        android:name="com.baidu.lbsapi.API_KEY"
-        android:value="13BA670990B71945BF9EF3BE0CDCE39BC8944912" >
-    </meta-data>
 
     <supports-screens
         android:anyDensity="true"

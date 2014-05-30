@@ -2,13 +2,19 @@ package com.ne.voiceguider.activity;
 
 import java.util.ArrayList;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.map.ItemizedOverlay;
+import com.baidu.mapapi.map.LocationData;
 import com.baidu.mapapi.map.MKOLUpdateElement;
 import com.baidu.mapapi.map.MKOfflineMap;
 import com.baidu.mapapi.map.MKOfflineMapListener;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.mapapi.map.OverlayItem;
 import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.mapapi.map.PopupOverlay;
@@ -56,6 +62,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 import android.widget.AdapterView.OnItemClickListener;
 import android.os.Build;
@@ -88,9 +95,19 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 
 	private GestureDetector detector;
 	private ViewFlipper viewFlipper;
-	
+
 	private ListView city_scene_download_listview;
 	private BigSceneListAdapter mBigSceneListAdapter = null;
+
+	// 定位相关
+	private LocationClient mLocClient;
+	private LocationData locData = null;
+	public MyBDLocationListenner myListener = new MyBDLocationListenner();
+	//定位图层
+	private MyLocationOverlay myLocationOverlay = null;
+	private Button city_location_button ;
+	private boolean isFirstLocation = true;//是否首次定位
+
 	/**
 	 * 地图上面插标
 	 */
@@ -112,9 +129,85 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		initOverlay();
 
 		bigSceneListview();
+
+		initLocation();
 	}
 
+	protected void initLocation()
+	{
+		//定位初始化
+		mLocClient = new LocationClient( this );
+		locData = new LocationData();
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);//打开gps
+		option.setCoorType("bd09ll");     //设置坐标类型
+		option.setScanSpan(1000);
+		option.setNeedDeviceDirect(true);
+		mLocClient.setLocOption(option);
+		
 
+		//定位图层初始化
+		myLocationOverlay = new MyLocationOverlay(mMapView);
+		//设置定位数据
+		myLocationOverlay.setData(locData);
+		//添加定位图层
+		mMapView.getOverlays().add(myLocationOverlay);
+		myLocationOverlay.enableCompass();
+		//修改定位数据后刷新图层生效
+		mMapView.refresh();
+
+		city_location_button = (Button)findViewById(R.id.city_location_button);
+		city_location_button.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.v(TAG,"city_location_button");
+				//mLocClient.start();
+				mLocClient.start();
+				Log.v(TAG, ""+mLocClient.isStarted());
+				//mLocClient.requestLocation();
+				Toast.makeText(CityActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
+			}
+		});
+	}
+
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class MyBDLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return ;
+			
+			locData.latitude = location.getLatitude();
+			locData.longitude = location.getLongitude();
+			//如果不显示定位精度圈，将accuracy赋值为0即可
+			locData.accuracy = location.getRadius();
+			// 此处可以设置 locData的方向信息, 如果定位 SDK 未返回方向信息，用户可以自己实现罗盘功能添加方向信息。
+			locData.direction = location.getDirection();
+			Log.v(TAG,"BDLocationListener Derect: "+locData.direction);
+			//更新定位数据
+			myLocationOverlay.setData(locData);
+			//更新图层数据执行刷新后生效
+			mMapView.refresh();
+			//是手动触发请求或首次定位时，移动到定位点
+			if(isFirstLocation)
+			{
+				mMapController.animateTo(new GeoPoint((int)(locData.latitude* 1e6), (int)(locData.longitude *  1e6)));
+				isFirstLocation = false;
+			}	
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+			if (poiLocation == null){
+				return ;
+			}
+		}
+	}
 	/**
 	 * 
 	 * @Title: bigSceneListview 
@@ -362,30 +455,30 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	{
 
 		mOverlayUtil = new OverlayUtil(mMapView, this);
-		
+
 		CityBean mCityBean = new CityBean();
 		mCityBean.setCityID(cityID);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(mCityBean));
-//		/**
-//		 * 准备overlay 数据
-//		 */
-//		GeoPoint p1 = new GeoPoint ((int)(23.143637*1E6),(int)(113.274189*1E6));
-//		OverlayItem item1 = new OverlayItem(p1,"广州美术馆","");
-//		/**
-//		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
-//		 */
-//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
-//
-//		GeoPoint p2 = new GeoPoint ((int)(23.14274*1E6),(int)(113.269904*1E6));
-//		OverlayItem item2 = new OverlayItem(p2,"明代古城墙","");
-//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
-//		/**
-//		 * 将item 添加到overlay中
-//		 * 注意： 同一个item只能add一次
-//		 */
-//		mOverlayUtil.addItem(item1);
-//		mOverlayUtil.addItem(item2);
+		//		/**
+		//		 * 准备overlay 数据
+		//		 */
+		//		GeoPoint p1 = new GeoPoint ((int)(23.143637*1E6),(int)(113.274189*1E6));
+		//		OverlayItem item1 = new OverlayItem(p1,"广州美术馆","");
+		//		/**
+		//		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
+		//		 */
+		//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+		//
+		//		GeoPoint p2 = new GeoPoint ((int)(23.14274*1E6),(int)(113.269904*1E6));
+		//		OverlayItem item2 = new OverlayItem(p2,"明代古城墙","");
+		//		item1.setMarker(getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+		//		/**
+		//		 * 将item 添加到overlay中
+		//		 * 注意： 同一个item只能add一次
+		//		 */
+		//		mOverlayUtil.addItem(item1);
+		//		mOverlayUtil.addItem(item2);
 		/**
 		 * 保存所有item，以便overlay在reset后重新添加
 		 */
