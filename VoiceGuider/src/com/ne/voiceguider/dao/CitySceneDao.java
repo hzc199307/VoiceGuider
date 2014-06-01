@@ -3,136 +3,113 @@ package com.ne.voiceguider.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
+import com.ne.voiceguider.DBHelper.TableColumns.BigSceneColumns;
+import com.ne.voiceguider.DBHelper.TableColumns.CityColumns;
+import com.ne.voiceguider.DBHelper.TableColumns.SmallSceneColumns;
 import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.bean.CityBean;
 import com.ne.voiceguider.bean.MusicInfoBean;
 import com.ne.voiceguider.bean.SmallScene;
 
-public class CitySceneDao {
-	Context mContext;
-	SQLiteDatabase db;
-	private String tag="CitySceneDao";
-	public CitySceneDao(Context context){
-		this.mContext=context;
-		db=mContext.openOrCreateDatabase
-				("city_scene.db", mContext.MODE_PRIVATE, null);
-	
-	}
-	//根据大景点查询他包含的小景点
-	public List<SmallScene> getContentScene(BigScene bs){
-		if(bs==null||bs.getBigSceneId()==-1){
-			Log.e(tag, "BigScene bs为空");
-			return null;
-		}
-		List<SmallScene> listSmallScene=new ArrayList<SmallScene>(); 
-		String[] columns={"BigSceneID","SmallSceneID",
-				"SmallSceneName","path","latitude","longtitude",
-				"mp3PlayTime","mp3PlaySize","CityID"};
-		String bId=bs.getBigSceneId()+"";
-		Cursor cr=db.query("smallscene", columns, "BigSceneID=?" ,
-				new String[]{bId}, null, null, null);
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-		if (cr != null) {
-			cr.moveToFirst();
-			Log.v(tag, cr.getCount()+"count");
-			int count=cr.getCount();
+public class CitySceneDao {
+
+	private SQLiteDatabase db;
+	private final String TAG ="CitySceneDao";
+
+	public CitySceneDao(Context mContext){
+		db=mContext.openOrCreateDatabase
+				("city_scene.db", Context.MODE_PRIVATE, null);
+
+	}
+
+	/**
+	 * 查询数据库的城市列表
+	 * @return List<CityBean>
+	 */
+	public List<CityBean> getCityBeans(){
+		List<CityBean> listCityBeans = new ArrayList<CityBean>();
+		Cursor cr=db.query("city", null, null, null, null, null, null);
+		int count=cr.getCount();
+		Log.v(TAG, "start getCityBeans() count = "+count);
+		if(cr!=null){
+			cr.moveToFirst();		
 			for (int i = 0; i < count; i++) {
-				SmallScene sScene=new SmallScene();
-				sScene.setFkBigSceneId(cr.getInt(0));
-				sScene.setSmallSceneID(cr.getInt(1));
-				sScene.setSmallSceneName(cr.getString(2));
-				sScene.setSmallScenePath(cr.getString(3));
-				sScene.setSmallSceneLatitude(cr.getDouble(4));
-				sScene.setSmallSceneLongtitude(cr.getDouble(5));
-				MusicInfoBean mib=new MusicInfoBean();
-				mib.setMusicPath(cr.getString(3));
-				mib.setName(cr.getString(2));
-				mib.setMusicTime(cr.getInt(6));
-				mib.setMusicSize(cr.getInt(7));
-				sScene.setMusicInfo(mib);
-				sScene.setFkCityID(cr.getInt(8));
-				listSmallScene.add(sScene);
+				CityBean cb=new CityBean();
+				cb.setCityID(cr.getInt(cr.getColumnIndex(CityColumns.cityID)));
+				cb.setCityName(cr.getString(cr.getColumnIndex(CityColumns.cityName)));
+				cb.setCityPinyin(cr.getString(cr.getColumnIndex(CityColumns.cityPinyin)));
+				cb.setLatitude(cr.getDouble(cr.getColumnIndex(CityColumns.latitude)));
+				cb.setLongtitude(cr.getDouble(cr.getColumnIndex(CityColumns.longtitude)));
+				listCityBeans.add(cb);
 				cr.moveToNext();
 			}
 		}
-		return listSmallScene;
+		Log.v(TAG, "finish getCityBeans() count = "+count);
+		return listCityBeans;
 	}
-	//根据城市查询包含的大景点
-	public List<BigScene> getBigScenes(CityBean cb){
-		if(cb==null||cb.getCityID()==-1){
-			Log.e(tag, "CityBean cb为空");
-			return null;
-		}
-		List<BigScene> listBigScene=new ArrayList<BigScene>();
-		String [] columns=new String[]
-				{"BigSceneID","BigSceneName","path","latitude","longitude","CityID"};
-		String[] args={cb.getCityID()+""};
+
+	/**
+	 * 根据城市ID查询它包含的大景点
+	 * @param cityID
+	 * @return List<BigScene>
+	 */
+	public List<BigScene> getBigScenes(int cityID){
+		List<BigScene> listBigScenes=new ArrayList<BigScene>();
+		String[] args={cityID+""};
 		Cursor cr=db.query
-				("bigscene", columns, "CityID=?",args , null, null, null);
+				("bigscene", null, "CityID=?",args , null, null, null);
+		int count=cr.getCount();
+		Log.v(TAG, "start getBigScenes() count = "+count);
 		if(cr!=null){
 			cr.moveToFirst();
-			int count=cr.getCount();
+			
 			for (int i = 0; i < count; i++) {
 				BigScene bs=new BigScene();
-				bs.setBigSceneId(cr.getInt(0));
-				bs.setBigSceneName(cr.getString(1));
-				bs.setBigScenePath(cr.getString(2));
-				bs.setBigSceneLatitude(cr.getDouble(3));
-				bs.setBigSceneLongitude(cr.getDouble(4));
-				bs.setFkCityID(cr.getInt(5));
-				listBigScene.add(bs);
+				bs.setBigSceneID(cr.getInt(cr.getColumnIndex(BigSceneColumns.bigSceneID)));
+				bs.setBigSceneName(cr.getString(cr.getColumnIndex(BigSceneColumns.bigSceneName)));
+				bs.setBigScenePinyin(cr.getString(cr.getColumnIndex(BigSceneColumns.bigScenePinyin)));
+				bs.setLatitude(cr.getDouble(cr.getColumnIndex(BigSceneColumns.latitude)));
+				bs.setLongitude(cr.getDouble(cr.getColumnIndex(BigSceneColumns.longtitude)));
+				bs.setCityID(cr.getInt(cr.getColumnIndex(BigSceneColumns.cityID)));
+				bs.setMP3Downloaded(cr.getInt(cr.getColumnIndex(BigSceneColumns.isMP3Downloaded)));
+				listBigScenes.add(bs);
 				cr.moveToNext();
 			}	
 		}
-		return listBigScene;
+		Log.v(TAG, "finish getBigScenes() count = "+count);
+		return listBigScenes;
 	}
-	//查询主城市
-	public List<CityBean> getCityBeans(){
-		List<CityBean> listCity=new ArrayList<CityBean>();
-		String[] columns={"CityID","CityName",
-				"path","latitude","longtitude"};
-		Cursor cr=db.query("city", columns, null, null, null, null, null);
+
+	//根据大景点查询他包含的小景点
+	public List<SmallScene> getSmallScenes(int bigSceneID){
+		List<SmallScene> listSmallScene=new ArrayList<SmallScene>(); 
+		String[] args={bigSceneID+""};
+		Cursor cr=db.query("smallscene", null, "bigSceneID=?" ,
+				args, null, null, null);
 		int count=cr.getCount();
-		Log.v(tag, count+"");
-		if(cr!=null){
+		Log.v(TAG, "start getSmallScenes() count = "+count);
+		if (cr != null) {
 			cr.moveToFirst();
 			for (int i = 0; i < count; i++) {
-				CityBean cb=new CityBean();
-				cb.setCityID(cr.getInt(0));
-				cb.setCityName(cr.getString(1));
-				cb.setDirPath(cr.getString(2));
-				cb.setLatitude(cr.getDouble(3));
-				cb.setLongtitude(cr.getDouble(4));
-				listCity.add(cb);
-				Log.v(tag, "执行完了");
+				SmallScene ss=new SmallScene();
+				ss.setSmallSceneID(cr.getInt(cr.getColumnIndex(SmallSceneColumns.smallSceneID)));
+				ss.setSmallSceneName(cr.getString(cr.getColumnIndex(SmallSceneColumns.smallSceneName)));
+				ss.setSmallScenePinyin(cr.getString(cr.getColumnIndex(SmallSceneColumns.smallScenePinyin)));
+				ss.setLatitude(cr.getDouble(cr.getColumnIndex(SmallSceneColumns.latitude)));
+				ss.setLongtitude(cr.getDouble(cr.getColumnIndex(SmallSceneColumns.longtitude)));
+				ss.setBigSceneID(cr.getInt(cr.getColumnIndex(SmallSceneColumns.bigSceneID)));
+				ss.setCityID(cr.getInt(cr.getColumnIndex(SmallSceneColumns.cityID)));
+				ss.setMp3Time(cr.getInt(cr.getColumnIndex(SmallSceneColumns.mp3Time)));
+				listSmallScene.add(ss);
 				cr.moveToNext();
 			}
 		}
-		return listCity;
-	}
-	//根据大景点递归删除大景点和其中的小景点
-	public int deleteBigCity(BigScene bs){
-		boolean isDelete=false;
-		//db.execSQL("PRAGMA foreign_keys = ON");
-		String [] args={bs.getBigSceneId()+""};
-		int result_row=db.delete("bigscene", "BigSceneID=?",args);
-		int result_row_ss=db.delete("smallscene", "BigSceneID=?", args);
-		return result_row+result_row_ss;
-		
-	}
-	//根据城市删除内容
-	public int deleteCity(CityBean cb){
-		boolean isDelete=false;
-		String [] args={cb.getCityID()+""};
-		int resultCity=db.delete("city", "CityID=?", args);
-		int resultBs=db.delete("bigscene", "CityID=?", args);
-		int resultSS=db.delete("smallscene", "CityID=?", args);
-		return resultCity+resultBs+resultSS;
-		
+		Log.v(TAG, "finish getSmallScenes() count = "+count);
+		return listSmallScene;
 	}
 }

@@ -3,19 +3,13 @@ package com.ne.voiceguider.bean;
 public class SmallScene {
 	private int smallSceneID;
 	private String smallSceneName;
-	private String smallScenePath;
-	private double smallSceneLatitude;
-	private double smallSceneLongtitude;
-	private int fkBigSceneId;
-	private int fkCityID;
-	private MusicInfoBean musicInfo;
-
-	public MusicInfoBean getMusicInfo() {
-		return musicInfo;
-	}
-	public void setMusicInfo(MusicInfoBean musicInfo) {
-		this.musicInfo = musicInfo;
-	}
+	private String smallScenePinyin;
+	private double latitude;
+	private double longtitude;
+	private int bigSceneID;
+	private int cityID;
+	public int mp3Time;
+	
 	public int getSmallSceneID() {
 		return smallSceneID;
 	}
@@ -28,34 +22,41 @@ public class SmallScene {
 	public void setSmallSceneName(String smallSceneName) {
 		this.smallSceneName = smallSceneName;
 	}
-	public String getSmallScenePath() {
-		return smallScenePath;
+	public String getSmallScenePinyin() {
+		return smallScenePinyin;
 	}
-	public void setSmallScenePath(String smallScenePath) {
-		this.smallScenePath = smallScenePath;
+	public void setSmallScenePinyin(String smallScenePinyin) {
+		this.smallScenePinyin = smallScenePinyin;
 	}
-	public double getSmallSceneLatitude() {
-		return smallSceneLatitude;
+	public double getLatitude() {
+		return latitude;
 	}
-	public void setSmallSceneLatitude(double smallSceneLatitude) {
-		this.smallSceneLatitude = smallSceneLatitude;
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
-	public double getSmallSceneLongtitude() {
-		return smallSceneLongtitude;
+	public double getLongtitude() {
+		return longtitude;
 	}
-	public void setSmallSceneLongtitude(double smallSceneLongtitude) {
-		this.smallSceneLongtitude = smallSceneLongtitude;
+	public void setLongtitude(double longtitude) {
+		this.longtitude = longtitude;
 	}
-	public int getFkBigSceneId() {
-		return fkBigSceneId;
+	public int getBigSceneID() {
+		return bigSceneID;
 	}
-	public void setFkBigSceneId(int fkBigSceneId) {
-		this.fkBigSceneId = fkBigSceneId;
+	public void setBigSceneID(int bigSceneID) {
+		this.bigSceneID = bigSceneID;
 	}
-	public int getFkCityID() {
-		return fkCityID;
+	public int getCityID() {
+		return cityID;
 	}
-	public void setFkCityID(int fkCityID) {
-		this.fkCityID = fkCityID;
+	public void setCityID(int cityID) {
+		this.cityID = cityID;
 	}
+	public int getMp3Time() {
+		return mp3Time;
+	}
+	public void setMp3Time(int mp3Time) {
+		this.mp3Time = mp3Time;
+	}
+
 }

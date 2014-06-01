@@ -26,9 +26,7 @@ public class BigSceneListAdapter extends BaseAdapter{
 
 	public BigSceneListAdapter(Context context,int cityID) {
 		CitySceneDao mCitySceneDao = new CitySceneDao(context);
-		CityBean mCityBean = new CityBean();
-		mCityBean.setCityID(cityID);
-		setListData(mCitySceneDao.getBigScenes(mCityBean));
+		setListData(mCitySceneDao.getBigScenes(cityID));
 		inflater = LayoutInflater.from(context);
 		Log.v(TAG, listData.size()+"");
 	}

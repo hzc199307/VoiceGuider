@@ -3,33 +3,30 @@ package com.ne.voiceguider.bean;
 import java.io.Serializable;
 
 public class CityBean implements Serializable{
-	/** 
-	* @Fields serialVersionUID : TODO
-	*/ 
 	
-	private static final long serialVersionUID = 1L;
-	private int CityID=-1;
-	private String CityName;
-	private String dirPath;
+	//private static final long serialVersionUID = 1L;
+	private int cityID=-1;
+	private String cityName;
+	private String cityPinyin;
 	private double longtitude;
 	private double latitude;
 	public int getCityID() {
-		return CityID;
+		return cityID;
 	}
 	public void setCityID(int cityID) {
-		CityID = cityID;
+		this.cityID = cityID;
 	}
 	public String getCityName() {
-		return CityName;
+		return cityName;
 	}
 	public void setCityName(String cityName) {
-		CityName = cityName;
+		this.cityName = cityName;
 	}
-	public String getDirPath() {
-		return dirPath;
+	public String getCityPinyin() {
+		return cityPinyin;
 	}
-	public void setDirPath(String dirPath) {
-		this.dirPath = dirPath;
+	public void setCityPinyin(String cityPinyin) {
+		this.cityPinyin = cityPinyin;
 	}
 	public double getLongtitude() {
 		return longtitude;
@@ -43,4 +40,5 @@ public class CityBean implements Serializable{
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
+
 }

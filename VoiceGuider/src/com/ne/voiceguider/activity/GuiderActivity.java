@@ -88,7 +88,7 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_text_webview.setInitialScale(70);
 		guider_text_webview.setHorizontalScrollbarOverlay(true);
 		guider_text_webview.setWebViewClient(new WebViewClient());
-		guider_text_webview.loadUrl("file:///android_asset/HTML/introduction.html");
+		guider_text_webview.loadUrl("file:///android_asset/HTML/html/guangzhou/yuexiugongyuan/guangzhoubowuguan.html");
 		guider_text_webview.getSettings().setUseWideViewPort(true);
 		guider_text_webview.getSettings().setLoadWithOverviewMode(true);
 		guider_text_webview.getSettings().setBuiltInZoomControls(false);

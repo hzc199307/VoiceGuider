@@ -232,7 +232,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				Intent intent = new Intent(CityActivity.this,GuiderActivity.class); // 跳转到城市景点详情页面 
 				Bundle bundle = new Bundle();                           //创建Bundle对象   
 				bundle.putString("bigSceneName", mBigScene.getBigSceneName());     //装入数据  
-				bundle.putInt("bigSceneID", mBigScene.getBigSceneId());
+				bundle.putInt("bigSceneID", mBigScene.getBigSceneID());
 				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
 				startActivity(intent);                                     //开始切换 
 			}
@@ -455,11 +455,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	{
 
 		mOverlayUtil = new OverlayUtil(mMapView, this);
-
-		CityBean mCityBean = new CityBean();
-		mCityBean.setCityID(cityID);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
-		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(mCityBean));
+		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(cityID));
 		//		/**
 		//		 * 准备overlay 数据
 		//		 */
