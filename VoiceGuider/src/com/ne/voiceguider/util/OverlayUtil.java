@@ -29,7 +29,6 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.GuiderActivity;
-import com.ne.voiceguider.activity.HikingActivity;
 import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.bean.CityBean;
 import com.ne.voiceguider.bean.SmallScene;
@@ -75,7 +74,8 @@ public class OverlayUtil<Class> {
 		/**
 		 * 创建自定义overlay
 		 */
-		mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
+		mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.location_share_icon_green),mMapView);
+		//mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
 		/**
 		 * 将overlay 添加至MapView中
 		 */
@@ -126,7 +126,8 @@ public class OverlayUtil<Class> {
 				gp= new GeoPoint ((int)(mSmallScene.getLatitude()*1E6),(int)(mSmallScene.getLongtitude()*1E6));
 				item = new OverlayItem(gp,mSmallScene.getSmallSceneName(),"");
 			}
-			item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+			//item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+			item.setMarker(mContext.getResources().getDrawable(R.drawable.location_share_icon_green));
 			addItem(item);
 		}
 
@@ -143,8 +144,9 @@ public class OverlayUtil<Class> {
 		Intent intent = new Intent(mContext,GuiderActivity.class); // 跳转到大景点下的小景点详情页面 
 		Bundle bundle = new Bundle();                       //创建Bundle对象 
 		BigScene mBigScene = (BigScene)(listObject.get(index));
-		bundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据   
-		intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
+		bundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据 
+		bundle.putInt("bigSceneID", mBigScene.getBigSceneID());
+		intent.putExtras(bundle); //把Bundle塞入Intent里面   
 		mContext.startActivity(intent);   
 	}
 

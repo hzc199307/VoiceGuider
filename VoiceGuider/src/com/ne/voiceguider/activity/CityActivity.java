@@ -131,8 +131,12 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		bigSceneListview();
 
 		initLocation();
+		
 	}
 
+	/**
+	 * 定位相关
+	 */
 	protected void initLocation()
 	{
 		//定位初始化

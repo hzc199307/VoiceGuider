@@ -2,7 +2,6 @@ package com.ne.voiceguider.fragment;
 
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
-import com.ne.voiceguider.activity.HikingActivity;
 import com.ne.voiceguider.adapter.BigSceneListAdapter;
 import com.ne.voiceguider.adapter.CityBeanListAdapter;
 import com.ne.voiceguider.bean.CityBean;
