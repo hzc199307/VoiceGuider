@@ -44,6 +44,17 @@
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:background="#fffff0" >
+        
+        <com.ne.voiceguider.view.Slider 
+            android:id="@+id/scene_music_seekbar"
+            android:layout_width="match_parent"
+         	android:layout_height="match_parent"
+         	android:layout_margin="5dp"
+         	android:layout_centerInParent="true"
+         	android:thumb="@drawable/thumb_pause"
+         	android:progressDrawable="@drawable/progress"
+        	style="?android:attr/progressBarStyleHorizontal"/>
+        
     </RelativeLayout>
 
     <LinearLayout

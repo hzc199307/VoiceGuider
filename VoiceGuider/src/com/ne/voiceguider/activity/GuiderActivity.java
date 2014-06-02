@@ -5,14 +5,25 @@ import com.ne.voiceguider.R;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 /**
@@ -27,6 +38,80 @@ public class GuiderActivity extends ActionBarActivity {
 
 	private TextView guider_head_text ;
 	private WebView guider_text_webview ;
+	
+	// music player
+    private SeekBar seekBar;
+    private Button startMedia;
+    private Button stop;
+    private MediaPlayer mp;  
+    boolean isPlaying= false;
+    int currentPos= 0;
+    Drawable mThumb= null;
+    
+	
+    private OnTouchListener onTouchListener_voice= new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View arg0, MotionEvent arg1) {
+			// TODO Auto-generated method stub
+			
+			if(arg1.getAction() != MotionEvent.ACTION_DOWN)
+				return false;
+			int id= arg0.getId();
+			switch(id){
+			
+			case R.id.scene_music_seekbar:
+				int nextPos= seekBar.getProgress();
+				if(Math.abs(nextPos - currentPos) > 100)
+					return false;
+				if(isPlaying){
+					mp.pause();
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
+					isPlaying= false;
+				}
+				else{
+					if(mp == null){
+						mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
+						seekBar.setProgress(0);
+						seekBar.setMax(mp.getDuration());
+					}
+					mp.start();
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+					isPlaying= true;
+				}
+				break;
+			default:
+				break;
+			}
+			return false;
+		}
+	}; 
+	
+	private SeekBar.OnSeekBarChangeListener onSeekBarChangeListener= new SeekBar.OnSeekBarChangeListener() {
+		
+		
+		
+		@Override
+		public void onStopTrackingTouch(SeekBar arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onStartTrackingTouch(SeekBar arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+			// TODO Auto-generated method stub
+			arg0.setProgress(arg1);
+			currentPos= arg1;
+			
+		}
+	};
+			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +125,54 @@ public class GuiderActivity extends ActionBarActivity {
 			guider_head_text.setText(b.getString("bigSceneName"));
 		}
 		loadAssetHtml();
+		
+		// music player
+        seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
+        mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
+		seekBar.setProgress(0);
+        seekBar.setMax(mp.getDuration());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        	int lastProgress;
+        	int originalProgress;
+        	boolean isThumbClick= false;
+
+        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+        		if(fromTouch == true){
+        			// only allow changes by 1 up or down
+        			if(Math.abs(progress-lastProgress)*1.0 / seekBar.getMax() > 0.1){
+        				seekBar.setProgress(lastProgress);
+        			} else {
+        				lastProgress = progress;
+        				isThumbClick= true;
+        			}
+        		} 
+        	}
+
+        	@Override
+        	public void onStopTrackingTouch(SeekBar seekBar) {
+        		if(! isThumbClick)
+        			return;
+        		if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1)
+        			return;
+        		originalProgress= lastProgress;
+        		if(isPlaying){
+					mp.pause();
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
+					isPlaying= false;
+				}
+				else{
+					mp.start();
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+					isPlaying= true;
+				}
+        	}
+
+        	@Override
+        	public void onStartTrackingTouch(SeekBar seekBar) {
+        		originalProgress= lastProgress = seekBar.getProgress();
+        	}
+        });
+
 	}
 
 	@Override
@@ -116,3 +249,4 @@ public class GuiderActivity extends ActionBarActivity {
 		}
 	}
 }
+

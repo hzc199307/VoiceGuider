@@ -18,7 +18,7 @@
         <!-- android:theme="@style/AppTheme" -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="7xdnxhqftFDXzU9pnylCpQvr" >
+            android:value="qfayaMLgYbsSWSsMq7dHLLLE" >
         </meta-data>
 
         <activity
@@ -74,7 +74,7 @@
     <!-- 以下都是百度地图API所需 -->
     <meta-data
         android:name="com.baidu.lbsapi.API_KEY"
-        android:value="13BA670990B71945BF9EF3BE0CDCE39BC8944912" >
+        android:value="qfayaMLgYbsSWSsMq7dHLLLE" >
     </meta-data>
 
     <supports-screens
