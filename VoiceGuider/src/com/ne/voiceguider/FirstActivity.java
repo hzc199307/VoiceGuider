@@ -58,7 +58,7 @@ public class FirstActivity extends Activity {
 					// do nothing
 				} finally {
 
-					//finish();
+					finish();
 					// 启动主应用
 					startActivity(new Intent(FirstActivity.this,MainActivity.class)); //startActivity(new Intent("com.ne.voiceguider.TabsActivity"));
 				}

@@ -95,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * @throws IOException
 	 */
 	public boolean createDataBase() throws IOException {
-		boolean dbExist = checkDataBase();//boolean dbExist = false;//
+		boolean dbExist = false;//boolean dbExist = checkDataBase();//
 		if (dbExist) {
 			// 数据库已存在，不做任何操作
 			Log.v("", "数据库没导入");

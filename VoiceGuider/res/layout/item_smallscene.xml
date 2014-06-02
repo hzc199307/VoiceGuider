@@ -1,35 +1,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android_custom="http://schemas.android.com/apk/res/com.ne.voiceguider"
-    android:id="@+id/citybean_layout"
+    android:id="@+id/smallscene_layout"
     android:layout_width="fill_parent"
     android:layout_height="60dp"
     android:background="#ffffff" >
 
     <TextView
-        android:id="@+id/citybean_textview"
+        android:id="@+id/smallscene_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:text="城市名称"
+        android:text="小景点名称"
         android:textSize="18sp" />
 
     <FrameLayout
-        android:id="@+id/citybean_download_button"
+        android:id="@+id/smallscene_download_button"
         android:layout_width="30dip"
         android:layout_height="30dip"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp" >
 
+
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
 
             <ImageView
-                android:id="@+id/citybean_download_button_imageView"
+                android:id="@+id/smallscene_download_button_imageView"
                 android:layout_width="20dip"
                 android:layout_height="20dip"
                 android:layout_centerInParent="true"

@@ -29,7 +29,6 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.GuiderActivity;
-import com.ne.voiceguider.activity.HikingActivity;
 import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.bean.CityBean;
 import com.ne.voiceguider.bean.SmallScene;
@@ -47,7 +46,7 @@ public class OverlayUtil<Class> {
 
 	private String TAG = "OverlayUtil";
 
-	
+
 	private List<Class> listObject;
 	/**
 	 * 地图上面插标
@@ -67,7 +66,7 @@ public class OverlayUtil<Class> {
 	private ArrayList<MyTextItem> textItemList = null;
 	private MyTextItem mCurTextItem = null;
 	private TextOverlay mTextOverlay = null;
-	
+
 	public OverlayUtil(MapView mapView,Context context) {
 		// TODO Auto-generated constructor stub
 		this.mMapView = mapView;
@@ -75,12 +74,13 @@ public class OverlayUtil<Class> {
 		/**
 		 * 创建自定义overlay
 		 */
-		mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
+		mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.location_share_icon_green),mMapView);
+		//mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
 		/**
 		 * 将overlay 添加至MapView中
 		 */
 		mMapView.getOverlays().add(mOverlay);
-		
+
 
 		textItemList = new ArrayList<MyTextItem>();
 		mTextOverlay = new TextOverlay(mMapView);
@@ -97,7 +97,7 @@ public class OverlayUtil<Class> {
 		popupText =(TextView) viewCache.findViewById(R.id.textcache);
 
 	}
-	
+
 	public void setListObject(List<Class> listObject)
 	{
 		this.listObject = listObject;
@@ -114,35 +114,39 @@ public class OverlayUtil<Class> {
 			if(mObject instanceof BigScene)
 			{
 				BigScene mBigScene = (BigScene)mObject;
-				Log.v(mBigScene.getBigSceneLatitude()+"",mBigScene.getBigSceneLongitude()+"");
-				gp= new GeoPoint ((int)(mBigScene.getBigSceneLatitude()*1E6),(int)(mBigScene.getBigSceneLongitude()*1E6));
+				Log.v(mBigScene.getLatitude()+"",mBigScene.getLongitude()+"");
+				gp= new GeoPoint ((int)(mBigScene.getLatitude()*1E6),(int)(mBigScene.getLongitude()*1E6));
 				item = new OverlayItem(gp,mBigScene.getBigSceneName(),"");
+
 			}
 			else
 			{
 				SmallScene mSmallScene = (SmallScene)mObject;
-				Log.v(mSmallScene.getSmallSceneLatitude()+"",mSmallScene.getSmallSceneLongtitude()+"");
-				gp= new GeoPoint ((int)(mSmallScene.getSmallSceneLatitude()*1E6),(int)(mSmallScene.getSmallSceneLongtitude()*1E6));
+				Log.v(mSmallScene.getLatitude()+"",mSmallScene.getLongtitude()+"");
+				gp= new GeoPoint ((int)(mSmallScene.getLatitude()*1E6),(int)(mSmallScene.getLongtitude()*1E6));
 				item = new OverlayItem(gp,mSmallScene.getSmallSceneName(),"");
 			}
-			item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+			//item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
+			item.setMarker(mContext.getResources().getDrawable(R.drawable.location_share_icon_green));
 			addItem(item);
 		}
-		
+
 		/**
 		 * 设置overlay图标，如不设置，则使用创建ItemizedOverlay时的默认图标.
 		 */
-		
+
 	}
 	/*
 	 * 跳转到大景点下的小景点详情页面 
 	 */
-	public void startActivity(){
+	public void startActivity(int index){
 		// TODO Auto-generated constructor stub
 		Intent intent = new Intent(mContext,GuiderActivity.class); // 跳转到大景点下的小景点详情页面 
-		Bundle bundle = new Bundle();                            //创建Bundle对象   
-		bundle.putString("bigSceneName", "越秀公园");            //装入数据   
-		intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
+		Bundle bundle = new Bundle();                       //创建Bundle对象 
+		BigScene mBigScene = (BigScene)(listObject.get(index));
+		bundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据 
+		bundle.putInt("bigSceneID", mBigScene.getBigSceneID());
+		intent.putExtras(bundle); //把Bundle塞入Intent里面   
 		mContext.startActivity(intent);   
 	}
 
@@ -174,13 +178,13 @@ public class OverlayUtil<Class> {
 	{
 		private Symbol textSymbol = new Symbol(); 
 		public MyTextItem(String text,GeoPoint pt) {
-			 
+
 			Symbol.Color textColor = textSymbol.new Color();  
 			textColor.alpha = 255;  
 			textColor.red = 0;  
 			textColor.blue = 255;  
 			textColor.green = 0;  
-			            
+
 			Symbol.Color textColor1 = textSymbol.new Color();  
 			textColor1.alpha = 10;  
 			textColor1.red = 80;  
@@ -199,7 +203,7 @@ public class OverlayUtil<Class> {
 		@Override
 		public void onClickedPopup(int index) {
 			Log.v(TAG, "onClickedPopup startActivity");
-			startActivity();// TODO Auto-generated method stub
+			startActivity(index);// TODO Auto-generated method stub
 			if ( index == 0){
 			}
 			else if(index == 1){
@@ -228,7 +232,7 @@ public class OverlayUtil<Class> {
 				};
 				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),32);
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
-				
+
 
 			}
 			else

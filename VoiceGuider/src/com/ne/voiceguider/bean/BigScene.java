@@ -1,17 +1,18 @@
 package com.ne.voiceguider.bean;
 
 public class BigScene {
-	private int bigSceneId=-1;
+	private int bigSceneID=-1;
 	private String bigSceneName;
-	private String bigScenePath;
-	private double bigSceneLatitude;
-	private double bigSceneLongitude;
-	private int fkCityID;
-	public int getBigSceneId() {
-		return bigSceneId;
+	private String bigScenePinyin;
+	private double latitude;
+	private double longitude;
+	private int cityID;
+	private int isMP3Downloaded = 0; 
+	public int getBigSceneID() {
+		return bigSceneID;
 	}
-	public void setBigSceneId(int bigSceneId) {
-		this.bigSceneId = bigSceneId;
+	public void setBigSceneID(int bigSceneID) {
+		this.bigSceneID = bigSceneID;
 	}
 	public String getBigSceneName() {
 		return bigSceneName;
@@ -19,29 +20,36 @@ public class BigScene {
 	public void setBigSceneName(String bigSceneName) {
 		this.bigSceneName = bigSceneName;
 	}
-	public String getBigScenePath() {
-		return bigScenePath;
+	public String getBigScenePinyin() {
+		return bigScenePinyin;
 	}
-	public void setBigScenePath(String bigScenePath) {
-		this.bigScenePath = bigScenePath;
+	public void setBigScenePinyin(String bigScenePinyin) {
+		this.bigScenePinyin = bigScenePinyin;
 	}
-	public double getBigSceneLatitude() {
-		return bigSceneLatitude;
+	public double getLatitude() {
+		return latitude;
 	}
-	public void setBigSceneLatitude(double bigSceneLatitude) {
-		this.bigSceneLatitude = bigSceneLatitude;
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
-	public double getBigSceneLongitude() {
-		return bigSceneLongitude;
+	public double getLongitude() {
+		return longitude;
 	}
-	public void setBigSceneLongitude(double bigSceneLongitude) {
-		this.bigSceneLongitude = bigSceneLongitude;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
-	public int getFkCityID() {
-		return fkCityID;
+	public int getCityID() {
+		return cityID;
 	}
-	public void setFkCityID(int fkCityID) {
-		this.fkCityID = fkCityID;
+	public void setCityID(int cityID) {
+		this.cityID = cityID;
 	}
+	public int isMP3Downloaded() {
+		return isMP3Downloaded;
+	}
+	public void setMP3Downloaded(int isMP3Downloaded) {
+		this.isMP3Downloaded = isMP3Downloaded;
+	}
+
 	
 }
