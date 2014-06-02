@@ -3,12 +3,14 @@ package com.ne.voiceguider.activity;
 
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.adapter.SmallSceneAdapter;
+import com.ne.voiceguider.util.MusicPlayerUtils;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -52,6 +54,11 @@ public class GuiderActivity extends ActionBarActivity {
     private Button stop;
     private MediaPlayer mp;  
     boolean isPlaying= false;
+    TextView text_place_name;
+	TextView text_time_already;
+	TextView text_time_total;
+	
+	Handler mHandler= null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +77,17 @@ public class GuiderActivity extends ActionBarActivity {
 	
 	private void guider_music() {
 		// music player
+		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
+		
+		text_place_name= (TextView) findViewById(R.id.scene_music_place_name);
+		
+		text_time_already= (TextView) findViewById(R.id.scene_music_time_already);
+		text_time_total= (TextView) findViewById(R.id.scene_music_time_total);
+		
         seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
-        mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
 		seekBar.setProgress(0);
         seekBar.setMax(mp.getDuration());
+        updateMusicProgressText();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
         	int lastProgress;
         	int originalProgress;
@@ -93,11 +107,20 @@ public class GuiderActivity extends ActionBarActivity {
 
         	@Override
         	public void onStopTrackingTouch(SeekBar seekBar) {
-        		if(! isThumbClick)
+                
+        		if(! isThumbClick){
+        			// update timer progress again
+                    updateMusicProgressText();
+                    return;
+        		}
+        		
+        		mp.seekTo(lastProgress);
+        		// update timer progress again
+                updateMusicProgressText();
+        		if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1){
         			return;
-        		if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1)
-        			return;
-        		originalProgress= lastProgress;
+        		}
+        		
         		if(isPlaying){
 					mp.pause();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
@@ -112,6 +135,7 @@ public class GuiderActivity extends ActionBarActivity {
 
         	@Override
         	public void onStartTrackingTouch(SeekBar seekBar) {
+        		mHandler.removeCallbacks(mUpdateTimeTask);
         		originalProgress= lastProgress = seekBar.getProgress();
         	}
         });
@@ -224,6 +248,7 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_text_webview.getSettings().setLoadWithOverviewMode(true);
 		guider_text_webview.getSettings().setBuiltInZoomControls(false);
 	}
+	
 	/**
 	 * ¼à¿Ø·µ»Ø¼ü
 	 * @param position
@@ -246,5 +271,34 @@ public class GuiderActivity extends ActionBarActivity {
 			return super.shouldOverrideUrlLoading(view, url);
 		}
 	}
+	
+	public void updateMusicProgressText() {
+		if( mHandler == null ){
+			mHandler= new Handler();
+		}
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+    }   
+ 
+    /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
+           public void run() {
+               int totalDuration = mp.getDuration();
+               int currentDuration = mp.getCurrentPosition();
+ 
+               // Updating progress bar
+               seekBar.setProgress(currentDuration);
+               
+               // Displaying Total Duration time
+               text_time_total.setText(""+ MusicPlayerUtils.milliSecondsToTimer(totalDuration));
+               // Displaying time completed playing
+               text_time_already.setText(""+ MusicPlayerUtils.milliSecondsToTimer(currentDuration));
+ 
+               // Running this thread after 100 milliseconds
+               mHandler.postDelayed(this, 100);
+           }
+        };
+ 
 }
 
