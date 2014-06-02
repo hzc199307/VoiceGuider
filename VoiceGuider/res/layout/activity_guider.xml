@@ -42,10 +42,10 @@
     <RelativeLayout
         android:id="@+id/voice"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:background="#fffff0" >
         
-        <com.ne.voiceguider.view.Slider 
+        <SeekBar 
             android:id="@+id/scene_music_seekbar"
             android:layout_width="match_parent"
          	android:layout_height="match_parent"
