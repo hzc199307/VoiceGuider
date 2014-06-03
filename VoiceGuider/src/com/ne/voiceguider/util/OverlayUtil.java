@@ -66,6 +66,7 @@ public class OverlayUtil<Class> {
 	private ArrayList<MyTextItem> textItemList = null;
 	private MyTextItem mCurTextItem = null;
 	private TextOverlay mTextOverlay = null;
+	private Bundle nowBundle = new Bundle();     
 
 	public OverlayUtil(MapView mapView,Context context) {
 		// TODO Auto-generated constructor stub
@@ -139,14 +140,11 @@ public class OverlayUtil<Class> {
 	/*
 	 * 跳转到大景点下的小景点详情页面 
 	 */
-	public void startActivity(int index){
+	public void startActivity(){
 		// TODO Auto-generated constructor stub
 		Intent intent = new Intent(mContext,GuiderActivity.class); // 跳转到大景点下的小景点详情页面 
-		Bundle bundle = new Bundle();                       //创建Bundle对象 
-		BigScene mBigScene = (BigScene)(listObject.get(index));
-		bundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据 
-		bundle.putInt("bigSceneID", mBigScene.getBigSceneID());
-		intent.putExtras(bundle); //把Bundle塞入Intent里面   
+		                  //创建Bundle对象 
+		intent.putExtras(nowBundle); //把Bundle塞入Intent里面   
 		mContext.startActivity(intent);   
 	}
 
@@ -203,7 +201,7 @@ public class OverlayUtil<Class> {
 		@Override
 		public void onClickedPopup(int index) {
 			Log.v(TAG, "onClickedPopup startActivity");
-			startActivity(index);// TODO Auto-generated method stub
+			startActivity();// TODO Auto-generated method stub
 			if ( index == 0){
 			}
 			else if(index == 1){
@@ -224,6 +222,10 @@ public class OverlayUtil<Class> {
 			popupText.setText(getItem(index).getTitle());
 			if(isPopShowed==false)//显示有按钮的pop
 			{
+				BigScene mBigScene = (BigScene)(listObject.get(index));
+				nowBundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据 
+				Log.v(TAG, mBigScene.getBigSceneName());
+				nowBundle.putInt("bigSceneID", mBigScene.getBigSceneID());
 				isPopShowed=true;
 				Bitmap[] bitMaps={
 						BMapUtil.getBitmapFromView(popupLeft), 		

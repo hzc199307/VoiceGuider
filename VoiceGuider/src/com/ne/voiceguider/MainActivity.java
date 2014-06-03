@@ -1,6 +1,7 @@
 package com.ne.voiceguider;
 
 import com.ne.voiceguider.fragment.HikingFragment;
+import com.ne.voiceguider.fragment.MineFragment;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -119,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
 			switch(position)
 			{
 			case 0:return new HikingFragment();
-			case 1:return new HikingFragment();//TODO
+			case 1:return new MineFragment();//TODO
 			case 2:return new HikingFragment();//TODO
 			default:return null;
 			}

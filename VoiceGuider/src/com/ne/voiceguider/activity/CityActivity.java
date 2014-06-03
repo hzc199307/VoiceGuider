@@ -6,6 +6,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.map.ItemizedOverlay;
 import com.baidu.mapapi.map.LocationData;
@@ -41,6 +42,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector.OnGestureListener;
@@ -103,10 +108,16 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private LocationClient mLocClient;
 	private LocationData locData = null;
 	public MyBDLocationListenner myListener = new MyBDLocationListenner();
+	private boolean isLocating = false;//是否正在定位
+	private GeoPoint nowGeoPoint ;
+	private float nowZoomLevel = 10;
 	//定位图层
 	private MyLocationOverlay myLocationOverlay = null;
 	private Button city_location_button ;
 	private boolean isFirstLocation = true;//是否首次定位
+	//方向相关
+	private SensorManager sensorManager;
+	private MySensorEventListener mySensorEventListener;
 
 	/**
 	 * 地图上面插标
@@ -131,7 +142,42 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		bigSceneListview();
 
 		initLocation();
-		
+
+		//initOrientation(); 放到onResume()里面
+
+	}
+
+	/**
+	 * 方向传感器
+	 */
+	void initOrientation()
+	{
+		sensorManager= (SensorManager) this.getSystemService(SENSOR_SERVICE);
+		mySensorEventListener = new MySensorEventListener();
+		Sensor sensor_orientation=sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+	    sensorManager.registerListener(mySensorEventListener,sensor_orientation, SensorManager.SENSOR_DELAY_UI);
+	}
+
+	private final class MySensorEventListener implements  SensorEventListener{
+
+		@Override
+		//可以得到传感器实时测量出来的变化值
+		public void onSensorChanged(SensorEvent event) {
+			//方向传感器
+			if(event.sensor.getType()==Sensor.TYPE_ORIENTATION){
+				//x表示手机指向的方位，0表示北,90表示东，180表示南，270表示西
+				float x = event.values[SensorManager.DATA_X];
+				locData.direction = x;//优化百度地图方向不准的问题
+				//Log.v(TAG, "方向："+x);
+
+			}
+		}
+
+		@Override
+		public void onAccuracyChanged(Sensor arg0, int arg1) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	/**
@@ -144,12 +190,13 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		locData = new LocationData();
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
+		option.setLocationMode(LocationMode.Hight_Accuracy);//设置定位模式
 		option.setOpenGps(true);//打开gps
 		option.setCoorType("bd09ll");     //设置坐标类型
 		option.setScanSpan(1000);
 		option.setNeedDeviceDirect(true);
 		mLocClient.setLocOption(option);
-		
+
 
 		//定位图层初始化
 		myLocationOverlay = new MyLocationOverlay(mMapView);
@@ -164,15 +211,47 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		city_location_button = (Button)findViewById(R.id.city_location_button);
 		city_location_button.setOnClickListener(new Button.OnClickListener() {
 
+
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				Log.v(TAG,"city_location_button");
-				//mLocClient.start();
-				mLocClient.start();
-				Log.v(TAG, ""+mLocClient.isStarted());
-				//mLocClient.requestLocation();
-				Toast.makeText(CityActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
+				if(isLocating==false)
+				{
+					nowGeoPoint = mMapView.getMapCenter();//储存定位前的状态
+					nowZoomLevel = mMapView.getZoomLevel();
+					mLocClient.start();
+					Toast.makeText(CityActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
+					if(mLocClient.isStarted())
+					{
+						isLocating = true;
+						city_location_button.setText("返回");
+						Log.v(TAG, "定位打开 ");						
+					}
+					//mLocClient.requestLocation();	
+				}
+				else
+				{
+					mLocClient.stop();
+					isFirstLocation = true;
+					if(mLocClient.isStarted()==false)
+					{
+						isLocating = false;
+						Toast.makeText(CityActivity.this, "返回上次位置……", Toast.LENGTH_SHORT).show();
+						//mOverlayUtil.showSpan();
+						mMapController.setCenter(nowGeoPoint);//设置地图中心点：上一次的位置
+						mMapController.setZoom(nowZoomLevel);//设置地图缩放级别
+						city_location_button.setText("定位");
+						Log.v(TAG, "定位关闭，返回景点位置 ");
+
+					}
+					else
+					{
+						Toast.makeText(CityActivity.this, "返回失败，请重试……", Toast.LENGTH_SHORT).show();
+					}
+
+				}
+
 			}
 		});
 	}
@@ -186,13 +265,18 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return ;
-			
+			if(isFirstLocation)
+			{
+				isLocating = true;
+				city_location_button.setText("返回");
+				Log.v(TAG, "定位打开 ");						
+			}
 			locData.latitude = location.getLatitude();
 			locData.longitude = location.getLongitude();
 			//如果不显示定位精度圈，将accuracy赋值为0即可
 			locData.accuracy = location.getRadius();
 			// 此处可以设置 locData的方向信息, 如果定位 SDK 未返回方向信息，用户可以自己实现罗盘功能添加方向信息。
-			locData.direction = location.getDirection();
+			//locData.direction = location.getDirection();
 			Log.v(TAG,"BDLocationListener Derect: "+locData.direction);
 			//更新定位数据
 			myLocationOverlay.setData(locData);
@@ -365,6 +449,11 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 					thread.start();
 					isMapNow = true;
 				}
+				else//如果正处于地图位置  返回景点位置
+				{
+					mOverlayUtil.showSpan();
+					Toast.makeText(CityActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
+				}
 
 
 			}
@@ -498,7 +587,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onDestroy(){
 		Log.v("CityActivity", "onDestroy");
-		mOfflineMapUtil.pause(cityDownloadId);
+		mLocClient.stop();
+		mOfflineMapUtil.pause(cityDownloadId);//只有destroy的时候才暂停下载
 		mOfflineMapUtil.destroy();//destroy的顺序一定不能改
 		if(mMapView!=null)
 		{
@@ -510,12 +600,14 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onPause(){
 		Log.v("CityActivity", "onPause");
+		sensorManager.unregisterListener(mySensorEventListener);
 		mMapView.onPause();
 		super.onPause();
 	}
 	@Override
 	protected void onResume(){
 		Log.v("CityActivity", "onResume");
+		initOrientation();
 		mMapView.onResume();
 		super.onResume();
 	}

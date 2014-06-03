@@ -39,74 +39,64 @@
             android:background="@drawable/scene_head_share" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/voice"
+    <LinearLayout
+        android:id="@+id/scene_music_musicplayer"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:background="#fffff0" >
-        
-        <LinearLayout
-            android:id="@+id/scene_music_musicplayer"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:orientation="horizontal" >
 
-            <TextView
-                android:id="@+id/scene_music_place_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:layout_gravity="center_vertical"
-                android:textSize="20sp"
-                android:text="勤政殿"/>
+        <TextView
+            android:id="@+id/scene_music_place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="9dp"
+            android:text="勤政殿"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
             <SeekBar
                 android:id="@+id/scene_music_seekbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:progressDrawable="@drawable/progress"
-                android:thumb="@drawable/thumb_pause"
-                android:layout_weight="1" />
-            
-        </LinearLayout>
-        
-        <LinearLayout 
-            android:id="@+id/scene_music_time"
-            android:layout_width="70dp"
-            android:layout_height="20dp"
-            android:paddingBottom="5dp"
-            android:layout_below="@id/scene_music_musicplayer"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:orientation="horizontal" >
-            
-            <TextView 
-                android:id="@+id/scene_music_time_already" 
+                android:thumb="@drawable/thumb_pause" />
+
+            <LinearLayout
+                android:id="@+id/scene_music_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0:00"/>
+                android:layout_gravity="right"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal" >
 
-            <TextView 
-                android:id="@+id/scene_music_time_delimiter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/" />
+                <TextView
+                    android:id="@+id/scene_music_time_already"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0:00" />
 
-            <TextView 
-                android:id="@+id/scene_music_time_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            
+                <TextView
+                    android:id="@+id/scene_music_time_delimiter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/" />
+
+                <TextView
+                    android:id="@+id/scene_music_time_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
-        
-        
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"

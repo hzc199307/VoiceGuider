@@ -13,48 +13,68 @@
         android:flipInterval="30"
         android:persistentDrawingCache="animation" />
 
-    <LinearLayout
-        android:id="@+id/main_bottom"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="40.0dip"
-        android:background="#FFFFFF" >
+        android:layout_height="40.0dip" >
 
-        <TextView
-            android:id="@+id/main_bottom_text1"
+        <LinearLayout
+            android:id="@+id/main_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="40.0dip"
+            android:background="@drawable/hiking_head" >
+
+            <TextView
+                android:id="@+id/main_bottom_text1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="发现"
+                android:textColor="#ffffff"
+                android:textSize="20.0dip" />
+
+            <TextView
+                android:id="@+id/main_bottom_text2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="我的"
+                android:textColor="#ffffff"
+                android:textSize="20.0dip" />
+
+            <TextView
+                android:id="@+id/main_bottom_text3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="更多"
+                android:textColor="#ffffff"
+                android:textSize="20.0dip" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="发现"
-            android:textColor="#000000"
-            android:textSize="20.0dip" />
+            android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/main_bottom_text2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="我的"
-            android:textColor="#000000"
-            android:textSize="20.0dip" />
-
-        <TextView
-            android:id="@+id/main_bottom_text3"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:text="更多"
-            android:textColor="#000000"
-            android:textSize="20.0dip" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/main_cursor"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="matrix"
-        android:src="@drawable/main_cursor" />
+            <ImageView
+                android:id="@+id/main_cursor"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="@drawable/abs__ab_transparent_dark_holo" />
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" />
+            
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
