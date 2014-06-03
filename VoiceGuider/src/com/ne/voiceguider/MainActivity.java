@@ -9,10 +9,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -202,5 +204,22 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * 监控返回键
+	 * @param position
+	 */
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			//实现Home键效果 
+		    //super.onBackPressed();这句话一定要注掉,不然又去调用默认的back处理方式了 
+		    Intent i= new Intent(Intent.ACTION_MAIN); 
+		    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+		    i.addCategory(Intent.CATEGORY_HOME); 
+		    startActivity(i);
+		}
+		return true;
+	}
 
 }

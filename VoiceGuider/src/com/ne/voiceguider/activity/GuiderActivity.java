@@ -90,7 +90,7 @@ public class GuiderActivity extends ActionBarActivity {
         updateMusicProgressText();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
         	int lastProgress;
-        	int originalProgress;
+        	int originalProgress;//起初的进度条
         	boolean isThumbClick= false;
 
         	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {

@@ -90,6 +90,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private int cityID,cityDownloadId = -1;
 	private MKOLUpdateElement cityUpdateInfo = null;
 	private Button city_scenelist_button,city_scenemap_button,city_head_back;
+	private TextView city_head_text;
 	private FrameLayout city_scene_mapdownload_button;
 	private RoundProgressBar city_scene_alldownload_button_roundProgressBar;
 	private ImageView city_scene_alldownload_button_imageView;
@@ -532,6 +533,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				CityActivity.this.finish();
 			}
 		});
+		city_head_text = (TextView)findViewById(R.id.city_head_text);
+		city_head_text.setText(cityName);
 	}
 
 	/**

@@ -20,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,7 +38,9 @@ public class FirstActivity extends Activity {
 	private final String TAG = "MainActivity";
 	protected boolean _active = true;
 	protected int _splashTime = 3000;
-	
+
+	final ScaleAnimation animation =new ScaleAnimation(1.0f, 1.25f, 1.0f, 1.25f, 
+			Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f); 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,7 +61,6 @@ public class FirstActivity extends Activity {
 				} catch(InterruptedException e) {
 					// do nothing
 				} finally {
-
 					finish();
 					// 启动主应用
 					startActivity(new Intent(FirstActivity.this,MainActivity.class)); //startActivity(new Intent("com.ne.voiceguider.TabsActivity"));
@@ -66,7 +69,13 @@ public class FirstActivity extends Activity {
 		};
 		splashTread.start();
 		onDB();
-		
+		ImageView mImageView = (ImageView)findViewById(R.id.helloImage);
+		animation.setDuration(3000);//设置动画持续时间 
+		animation.setFillAfter(true);//动画执行完后是否停留在执行完的状态  
+		mImageView.setAnimation(animation); 
+		/** 开始动画 */ 
+		animation.startNow();
+
 		//		new Handler().postDelayed(new Runnable() {
 		//			@Override
 		//			public void run() {
@@ -90,7 +99,7 @@ public class FirstActivity extends Activity {
 		try {
 			if(mDBHelper.createDataBase())
 
-				mTextView.setText("hashahahhahahha");
+				;//mTextView.setText("hashahahhahahha");
 		} catch (IOException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
@@ -99,7 +108,7 @@ public class FirstActivity extends Activity {
 				.query("select * from city where cityid=1 ",
 						null);
 		mCursor.moveToFirst();
-		mTextView.setText(mCursor.getString(2));
+		//mTextView.setText(mCursor.getString(2));
 	}
 
 	@Override
