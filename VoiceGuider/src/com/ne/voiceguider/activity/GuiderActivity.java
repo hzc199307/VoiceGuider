@@ -1,19 +1,35 @@
 package com.ne.voiceguider.activity;
 
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.mapapi.BMapManager;
+import com.baidu.mapapi.map.MapController;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
+import com.ne.voiceguider.VoiceGuiderApplication;
+import com.ne.voiceguider.activity.CityActivity.MyMKOfflineMapListener;
 import com.ne.voiceguider.adapter.SmallSceneAdapter;
+import com.ne.voiceguider.fragment.HikingFragment.MyBDLocationListenner;
+import com.ne.voiceguider.util.LocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtils;
+import com.ne.voiceguider.util.OfflineMapUtil;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -21,14 +37,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 /**
  * 小景点的acitivity 包括语音播放
@@ -40,88 +64,234 @@ import android.widget.TextView;
  */
 public class GuiderActivity extends ActionBarActivity {
 
+	private final String TAG = "GuiderActivity";
 	private String bigSceneName ;
 	private int bigSceneID ;
-	private TextView guider_head_text ;
+	//head
+	private Button guider_scenelist_button,guider_scenemap_button;//private TextView guider_head_text ;
 	private Button guider_head_back,scene_voice_text_button;
+
+	private ImageView guider_cursor1, guider_cursor2;
+
+	//webview
 	private WebView guider_text_webview ;
-	
+
 	private ListView smallscene_listview = null;
-	
+
+
+	//flipper
+	private ViewFlipper mViewFlipper ;
+	private View fragment_guider_map,fragment_guider_list;
+	private Boolean isMapNow;
+
 	// music player
-    private SeekBar seekBar;
-    private Button startMedia;
-    private Button stop;
-    private MediaPlayer mp;  
-    boolean isPlaying= false;
-    TextView text_place_name;
+	private SeekBar seekBar;
+	private Button startMedia;
+	private Button stop;
+	private MediaPlayer mp;  
+	boolean isPlaying= false;
+	TextView text_place_name;
 	TextView text_time_already;
 	TextView text_time_total;
-	
+
 	Handler mHandler= null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_guider);
-		
+		Intent  intent = getIntent();
+		if ( intent.hasExtra("bigSceneName")  ){
+			Bundle b = intent.getExtras();
+			bigSceneName = b.getString("bigSceneName");
+			
+		}
+		if ( intent.hasExtra("bigSceneID")  ){
+			Bundle b = intent.getExtras();
+			bigSceneID = b.getInt("bigSceneID");
+		}
+
+		initMap();
+		initLocation();
 		guider_head();
 		guider_music();
 		webview();
-		
-		
-		smallscene_listview = (ListView)findViewById(R.id.smallscene_listview);
-		smallscene_listview.setAdapter(new SmallSceneAdapter(this, bigSceneID));
 	}
-	
+
+	private MapView mMapView = null;
+	private MapController mMapController;
+	public void initMap()
+	{
+		VoiceGuiderApplication app = (VoiceGuiderApplication)this.getApplication();
+		if (app.mBMapManager == null) {
+			app.mBMapManager = new BMapManager(getApplicationContext());
+			/**
+			 * 如果BMapManager没有初始化则初始化BMapManager
+			 */
+			app.mBMapManager.init(new VoiceGuiderApplication.MyGeneralListener());
+		}
+		//注意：请在试用setContentView前初始化BMapManager对象，否则会报错
+		setContentView(R.layout.activity_guider);
+		initFlipper();
+		mMapView=(MapView)fragment_guider_map.findViewById(R.id.guider_scenemap);
+		//mMapView.setBuiltInZoomControls(true);//设置启用内置的缩放控件
+		mMapController=mMapView.getController();
+		// 得到mMapView的控制权,可以用它控制和驱动平移和缩放
+		GeoPoint point = new GeoPoint((int)(39.915* 1E6),(int)(116.404* 1E6));//天安门
+		//用给定的经纬度构造一个GeoPoint，单位是微度 (度 * 1E6)
+		mMapController.setCenter(point);//设置地图中心点
+		mMapController.setZoom(12);//设置地图zoom级别
+		mMapController.setCompassMargin(90, 90);//设置指南针位置
+		/**
+		 *  设置地图是否响应点击事件  .
+		 */
+		mMapController.enableClick(true);
+	}
+	/**
+	 * 定位相关
+	 * @Title: initLocation 
+	 * @Description: TODO
+	 * @author HeZhichao
+	 * @date 2014年6月4日 下午5:29:57 
+	 * @param 
+	 * @return void 
+	 * @throws
+	 */
+	private LocationUtil mLocationUtil;
+	private MyBDLocationListenner mMyBDLocationListenner;
+	private ImageButton guider_location_button ;
+	private boolean isLocating = false;//是否正在定位
+	private boolean isFirstLocation = true;//是否首次定位
+	public void initLocation()
+	{
+		mMyBDLocationListenner = new MyBDLocationListenner();
+		mLocationUtil = new LocationUtil(this, mMyBDLocationListenner,mMapView);
+		guider_location_button = (ImageButton)findViewById(R.id.guider_location_button);
+		guider_location_button.setOnClickListener(new ImageButton.OnClickListener() {
+
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.v(TAG,"city_location_button");
+				if(isLocating==false)
+				{
+					//					nowGeoPoint = mMapView.getMapCenter();//储存定位前的状态
+					//					nowZoomLevel = mMapView.getZoomLevel();
+					mLocationUtil.start();
+					Toast.makeText(GuiderActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
+					if(mLocationUtil.isStarted())
+					{
+						isLocating = true;
+						guider_location_button.setImageResource(R.drawable.location_button_return);
+						//city_location_button.setText("返回");
+						Log.v(TAG, "定位打开 ");						
+					}
+					//mLocClient.requestLocation();	
+				}
+				else
+				{
+					mLocationUtil.stop();
+					isFirstLocation = true;
+					if(mLocationUtil.isStarted()==false)
+					{
+						isLocating = false;
+						Toast.makeText(GuiderActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
+						//mOverlayUtil.showSpan();
+						//						mMapController.setCenter(nowGeoPoint);//设置地图中心点：上一次的位置
+						//						mMapController.setZoom(nowZoomLevel);//设置地图缩放级别
+						guider_location_button.setImageResource(R.drawable.location_button_loc);//city_location_button.setText("定位");
+						Log.v(TAG, "定位关闭，返回景点位置 ");
+					}
+					else
+					{
+						Toast.makeText(GuiderActivity.this, "返回失败，请重试……", Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
+		});
+	}
+	/**
+	 * 定位SDK监听函数
+	 */
+	public class MyBDLocationListenner implements BDLocationListener {
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return ;
+			if(isFirstLocation)
+			{
+				isLocating = true;
+				guider_location_button.setImageResource(R.drawable.location_button_return);//city_location_button.setText("返回");
+				Log.v(TAG, "定位打开 ");						
+			}
+			mLocationUtil.updateLocationData(location);
+			//更新定位数据
+			mLocationUtil.setData();
+			//更新图层数据执行刷新后生效
+			mMapView.refresh();
+			//是手动触发请求或首次定位时，移动到定位点
+			if(isFirstLocation)
+			{
+				mMapController.animateTo(new GeoPoint((int)(location.getLatitude()* 1e6), (int)(location.getLongitude() *  1e6)));
+				isFirstLocation = false;
+			}	
+		}
+
+		public void onReceivePoi(BDLocation poiLocation) {
+			if (poiLocation == null){
+				return ;
+			}
+		}
+	}
 	private void guider_music() {
 		// music player
 		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
-		
+
 		text_place_name= (TextView) findViewById(R.id.scene_music_place_name);
-		
+
 		text_time_already= (TextView) findViewById(R.id.scene_music_time_already);
 		text_time_total= (TextView) findViewById(R.id.scene_music_time_total);
-		
-        seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
+
+		seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
 		seekBar.setProgress(0);
-        seekBar.setMax(mp.getDuration());
-        updateMusicProgressText();
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-        	int lastProgress;
-        	int originalProgress;//起初的进度条
-        	boolean isThumbClick= false;
+		seekBar.setMax(mp.getDuration());
+		updateMusicProgressText();
+		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			int lastProgress;
+			int originalProgress;//起初的进度条
+			boolean isThumbClick= false;
 
-        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-        		if(fromTouch == true){
-        			// only allow changes by 1 up or down
-        			if(Math.abs(progress-lastProgress)*1.0 / seekBar.getMax() > 0.1){
-        				seekBar.setProgress(lastProgress);
-        			} else {
-        				lastProgress = progress;
-        				isThumbClick= true;
-        			}
-        		} 
-        	}
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+				if(fromTouch == true){
+					// only allow changes by 1 up or down
+					if(Math.abs(progress-lastProgress)*1.0 / seekBar.getMax() > 0.1){
+						seekBar.setProgress(lastProgress);
+					} else {
+						lastProgress = progress;
+						isThumbClick= true;
+					}
+				} 
+			}
 
-        	@Override
-        	public void onStopTrackingTouch(SeekBar seekBar) {
-                
-        		if(! isThumbClick){
-        			// update timer progress again
-                    updateMusicProgressText();
-                    return;
-        		}
-        		
-        		mp.seekTo(lastProgress);
-        		// update timer progress again
-                updateMusicProgressText();
-        		if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1){
-        			return;
-        		}
-        		
-        		if(isPlaying){
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+
+				if(! isThumbClick){
+					// update timer progress again
+					updateMusicProgressText();
+					return;
+				}
+
+				mp.seekTo(lastProgress);
+				// update timer progress again
+				updateMusicProgressText();
+				if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1){
+					return;
+				}
+
+				if(isPlaying){
 					mp.pause();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
 					isPlaying= false;
@@ -131,15 +301,15 @@ public class GuiderActivity extends ActionBarActivity {
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
 					isPlaying= true;
 				}
-        	}
+			}
 
-        	@Override
-        	public void onStartTrackingTouch(SeekBar seekBar) {
-        		mHandler.removeCallbacks(mUpdateTimeTask);
-        		originalProgress= lastProgress = seekBar.getProgress();
-        	}
-        });
-		
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				mHandler.removeCallbacks(mUpdateTimeTask);
+				originalProgress= lastProgress = seekBar.getProgress();
+			}
+		});
+
 	}
 
 	/**
@@ -147,22 +317,57 @@ public class GuiderActivity extends ActionBarActivity {
 	 */
 	void guider_head()
 	{
-		guider_head_text = (TextView)findViewById(R.id.guider_head_text);
-		Intent  intent = getIntent();
-		if ( intent.hasExtra("bigSceneName")  ){
-			Bundle b = intent.getExtras();
-			bigSceneName = b.getString("bigSceneName");
-			guider_head_text.setText(bigSceneName);
-		}
-		loadAssetHtml();
-		
-		if ( intent.hasExtra("bigSceneID")  ){
-			Bundle b = intent.getExtras();
-			bigSceneID = b.getInt("bigSceneID");
-		}
+		guider_scenelist_button = (Button)findViewById(R.id.guider_scenelist_button);
+		guider_scenemap_button = (Button)findViewById(R.id.guider_scenemap_button);
+		//guider_head_text = (TextView)findViewById(R.id.guider_head_text);
+		guider_scenelist_button.setText(bigSceneName+"列表");
+		guider_scenemap_button.setText(bigSceneName+"地图");
+		//guider_head_text.setText(bigSceneName);
+		guider_cursor1 = (ImageView)findViewById(R.id.guider_cursor1);
+		guider_cursor2 = (ImageView)findViewById(R.id.guider_cursor2);
+		View.OnClickListener switchOnClickListener = new View.OnClickListener() {
+
+			int index;
+			@Override
+			public void onClick(View view) {
+				// TODO Auto-generated method stub
+				switch (view.getId()) {  
+				case R.id.guider_scenelist_button:
+				{
+					if(isMapNow == true)
+					{
+						leftToRight();
+						isMapNow = false;
+					}
+					guider_cursor1.setVisibility(View.VISIBLE);
+					guider_cursor2.setVisibility(View.INVISIBLE);
+					index=0;break;
+				}
+
+				case R.id.guider_scenemap_button:
+				{
+					if(isMapNow == false)
+					{
+						RightToLeft();
+						isMapNow = true;
+					}
+					guider_cursor2.setVisibility(View.VISIBLE);
+					guider_cursor1.setVisibility(View.INVISIBLE);
+					index=1;break;
+				}
+				default:
+					index=-1;
+					break;
+				}
+			}
+		};
+		guider_scenelist_button.setOnClickListener(switchOnClickListener);
+		guider_scenemap_button.setOnClickListener(switchOnClickListener);
+
+
 		guider_head_back= (Button)findViewById(R.id.guider_head_back);
 		guider_head_back.setOnClickListener(new Button.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				finish();
@@ -170,11 +375,42 @@ public class GuiderActivity extends ActionBarActivity {
 		});
 	}
 
+	//地图和列表的flipper
+	void initFlipper() {
+		isMapNow = false;
+		mViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+		fragment_guider_list = LayoutInflater.from(this).inflate(R.layout.fragment_guider_list, null);
+		mViewFlipper.addView(fragment_guider_list);
+		fragment_guider_map = LayoutInflater.from(this).inflate(R.layout.fragment_guider_map, null);
+		mViewFlipper.addView(fragment_guider_map);
+		smallscene_listview = (ListView)fragment_guider_list.findViewById(R.id.smallscene_listview);
+		smallscene_listview.setAdapter(new SmallSceneAdapter(this, bigSceneID));
+	}
+	void leftToRight()
+	{
+		mViewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.rightin));
+		mViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.rightout));
+		mViewFlipper.showNext();
+		isMapNow = !isMapNow;
+	}
+	void RightToLeft()
+	{
+		mViewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.leftin));
+		mViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.leftout));
+		mViewFlipper.showPrevious();
+		isMapNow = !isMapNow;
+	}
+
 	/**
 	 * 语音的文字 webview部分的处理
 	 */
 	void webview()
 	{
+		loadAssetHtml();
 		guider_text_webview = (WebView)findViewById(R.id.guider_text_webview);
 		scene_voice_text_button = (Button)findViewById(R.id.scene_voice_text_button);
 		scene_voice_text_button.setOnClickListener(new Button.OnClickListener() {
@@ -194,9 +430,10 @@ public class GuiderActivity extends ActionBarActivity {
 				}
 			}
 		});
-		
+
 		loadAssetHtml();
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -216,7 +453,7 @@ public class GuiderActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	/**
 	 * 载入文本视图
 	 * @Title: loadAssetHtml 
@@ -229,9 +466,9 @@ public class GuiderActivity extends ActionBarActivity {
 	 */
 	public void loadAssetHtml() {
 
-	    final String mimeType = "text/html";  
-	    final String encoding = "utf-8"; 
-	    String url = "http://www.baidu.com/";
+		final String mimeType = "text/html";  
+		final String encoding = "utf-8"; 
+		String url = "http://www.baidu.com/";
 		guider_text_webview = (WebView) findViewById(R.id.guider_text_webview);
 		// 设置WebView属性，能够执行JavaScript脚本
 		guider_text_webview.getSettings().setJavaScriptEnabled(true);
@@ -248,7 +485,7 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_text_webview.getSettings().setLoadWithOverviewMode(true);
 		guider_text_webview.getSettings().setBuiltInZoomControls(false);
 	}
-	
+
 	/**
 	 * 监控返回键
 	 * @param position
@@ -264,41 +501,41 @@ public class GuiderActivity extends ActionBarActivity {
 
 	public class MyWebViewClient extends WebViewClient {
 		/**
-		* Show in webview not system webview.
-		*/
+		 * Show in webview not system webview.
+		 */
 		public boolean shouldOverviewUrlLoading(WebView view, String url) {
 			view.loadUrl(url);
 			return super.shouldOverrideUrlLoading(view, url);
 		}
 	}
-	
+
 	public void updateMusicProgressText() {
 		if( mHandler == null ){
 			mHandler= new Handler();
 		}
-        mHandler.postDelayed(mUpdateTimeTask, 100);
-    }   
- 
-    /**
-     * Background Runnable thread
-     * */
-    private Runnable mUpdateTimeTask = new Runnable() {
-           public void run() {
-               int totalDuration = mp.getDuration();
-               int currentDuration = mp.getCurrentPosition();
- 
-               // Updating progress bar
-               seekBar.setProgress(currentDuration);
-               
-               // Displaying Total Duration time
-               text_time_total.setText(""+ MusicPlayerUtils.milliSecondsToTimer(totalDuration));
-               // Displaying time completed playing
-               text_time_already.setText(""+ MusicPlayerUtils.milliSecondsToTimer(currentDuration));
- 
-               // Running this thread after 100 milliseconds
-               mHandler.postDelayed(this, 100);
-           }
-        };
- 
+		mHandler.postDelayed(mUpdateTimeTask, 100);
+	}   
+
+	/**
+	 * Background Runnable thread
+	 * */
+	private Runnable mUpdateTimeTask = new Runnable() {
+		public void run() {
+			int totalDuration = mp.getDuration();
+			int currentDuration = mp.getCurrentPosition();
+
+			// Updating progress bar
+			seekBar.setProgress(currentDuration);
+
+			// Displaying Total Duration time
+			text_time_total.setText(""+ MusicPlayerUtils.milliSecondsToTimer(totalDuration));
+			// Displaying time completed playing
+			text_time_already.setText(""+ MusicPlayerUtils.milliSecondsToTimer(currentDuration));
+
+			// Running this thread after 100 milliseconds
+			mHandler.postDelayed(this, 100);
+		}
+	};
+
 }
 

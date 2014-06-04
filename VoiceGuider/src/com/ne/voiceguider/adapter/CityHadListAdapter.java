@@ -64,7 +64,7 @@ public class CityHadListAdapter extends BaseAdapter{
 			if (convertView == null) {// 这样做可以使view循环利用，而不会有多少个item就产生多少个view
 				holder = new Holder();
 				convertView = inflater.inflate(R.layout.item_citybean, null);// 引用布局文件
-				holder.citybean_textview = (TextView) convertView.findViewById(R.id.citybean_textview);	
+				//holder.citybean_textview = (TextView) convertView.findViewById(R.id.citybean_textview);	
 				convertView.setTag(holder);// 如果是新产生的view，则设置tag
 			} 
 			else
@@ -72,13 +72,13 @@ public class CityHadListAdapter extends BaseAdapter{
 				holder = (Holder) convertView.getTag();// 如果是使用已经存在的view，则从tag中获取就可以了
 			}
 			CityBean myCityBean = listData.get(position);
-			if (myCityBean != null) {
-				// 对相应的控件赋值
-				holder.citybean_textview.setText(myCityBean.getCityName());
-			}
-			else {
-				holder.citybean_textview.setText("error");
-			}
+//			if (myCityBean != null) {
+//				// 对相应的控件赋值
+//				holder.citybean_textview.setText(myCityBean.getCityName());
+//			}
+//			else {
+//				holder.citybean_textview.setText("error");
+//			}
 			return convertView;
 		}
 

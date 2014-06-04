@@ -35,7 +35,7 @@ import android.widget.TextView;
  */
 public class FirstActivity extends Activity {
 
-	private final String TAG = "MainActivity";
+	private final String TAG = "FirstActivity";
 	protected boolean _active = true;
 	protected int _splashTime = 3000;
 

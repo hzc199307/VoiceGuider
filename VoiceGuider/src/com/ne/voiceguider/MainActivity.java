@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 	
+	private String TAG = "MainActivity";
+	public static int whichFragment=0;
 	private ViewPager viewPager;//页卡内容
 	private MyFragmentPagerAdapter mMyFragmentPagerAdapter;
 	private ImageView imageView;// 动画图片
@@ -77,7 +80,9 @@ public class MainActivity extends ActionBarActivity {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int screenW = dm.widthPixels;// 获取分辨率宽度
+		bmpW = 20;
 		offset = (screenW / 3 - bmpW) / 2;// 计算偏移量
+		Log.v(TAG, "screenW:"+screenW+" offset:"+offset+" bmpW:"+bmpW);
 		Matrix matrix = new Matrix();
 		matrix.postTranslate(offset, 0);
 		imageView.setImageMatrix(matrix);// 设置动画初始位置
@@ -212,12 +217,24 @@ public class MainActivity extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			//实现Home键效果 
-		    //super.onBackPressed();这句话一定要注掉,不然又去调用默认的back处理方式了 
-		    Intent i= new Intent(Intent.ACTION_MAIN); 
-		    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-		    i.addCategory(Intent.CATEGORY_HOME); 
-		    startActivity(i);
+		{
+			Log.v(TAG, viewPager.getCurrentItem()+" "+whichFragment);
+			if(viewPager.getCurrentItem()==1&&whichFragment!=10&&whichFragment!=11)
+			{
+				//如果在里层的fragment 就执行原版的返回
+				super.onKeyDown(keyCode, event);
+			}
+			else
+			{
+				//实现Home键效果 
+			    //super.onBackPressed();这句话一定要注掉,不然又去调用默认的back处理方式了 
+			    Intent i= new Intent(Intent.ACTION_MAIN); 
+			    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+			    i.addCategory(Intent.CATEGORY_HOME); 
+			    startActivity(i);
+			}
+		}
+			
 		}
 		return true;
 	}

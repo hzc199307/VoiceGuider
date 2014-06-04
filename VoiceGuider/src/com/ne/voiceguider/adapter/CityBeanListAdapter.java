@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.bean.CityBean;
 import com.ne.voiceguider.dao.CitySceneDao;
@@ -19,8 +22,11 @@ public class CityBeanListAdapter extends BaseAdapter{
 	private final String TAG = "CityBeanListAdapter";
 	private List<CityBean> listData = null;
 	private LayoutInflater inflater = null;
+	private Context mContext;
+	int size = 0;
 
 	public CityBeanListAdapter(Context context) {
+		mContext = context;
 		CitySceneDao mCitySceneDao = new CitySceneDao(context);
 		setListData(mCitySceneDao.getCityBeans());
 		inflater = LayoutInflater.from(context);
@@ -37,6 +43,7 @@ public class CityBeanListAdapter extends BaseAdapter{
 		}else {
 			listData = new ArrayList<CityBean>();
 		}
+		size = getCount();
 	}
 	@Override
 	public int getCount() {
@@ -63,7 +70,7 @@ public class CityBeanListAdapter extends BaseAdapter{
 		if (convertView == null) {// 这样做可以使view循环利用，而不会有多少个item就产生多少个view
 			holder = new Holder();
 			convertView = inflater.inflate(R.layout.item_citybean, null);// 引用布局文件
-			holder.citybean_textview = (TextView) convertView.findViewById(R.id.citybean_textview);	
+			holder.helloImage = (ImageView)convertView.findViewById(R.id.helloImage);	
 			convertView.setTag(holder);// 如果是新产生的view，则设置tag
 		} 
 		else
@@ -71,18 +78,13 @@ public class CityBeanListAdapter extends BaseAdapter{
 			holder = (Holder) convertView.getTag();// 如果是使用已经存在的view，则从tag中获取就可以了
 		}
 		CityBean myCityBean = listData.get(position);
-		if (myCityBean != null) {
-			// 对相应的控件赋值
-			holder.citybean_textview.setText(myCityBean.getCityName());
-		}
-		else {
-			holder.citybean_textview.setText("error");
-		}
+		int id = mContext.getResources().getIdentifier("city_"+myCityBean.getCityPinyin() ,"drawable","com.ne.voiceguider");
+		holder.helloImage.setImageResource(id);
 		return convertView;
 	}
 
 	final class Holder {
-		public TextView citybean_textview;
+		public ImageView helloImage;
 	}
 
 	/**
@@ -93,6 +95,26 @@ public class CityBeanListAdapter extends BaseAdapter{
 		this.listData.add(item);
 	}
 
+
+	public CityBean getNearestCity(double lat,double longt)
+	{
+		double min=-1;
+		int minIndex = 0;
+		double distance = 0;
+		CityBean mCityBean ; 
+		for(int i=0;i<size;i++)
+		{
+			mCityBean = listData.get(i);
+			distance = Math.sqrt((lat-mCityBean.getLatitude())*(lat-mCityBean.getLatitude())
+					+(longt-mCityBean.getLongtitude())*(longt-mCityBean.getLongtitude()));
+			if(distance<min)
+			{
+				minIndex = i;
+				min = distance;
+			}
+		}
+		return listData.get(minIndex);
+	}
 
 
 }

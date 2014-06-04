@@ -1,5 +1,6 @@
 package com.ne.voiceguider.fragment;
 
+import com.ne.voiceguider.MainActivity;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.GuiderActivity;
@@ -26,6 +27,7 @@ public class MineFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		MainActivity.whichFragment = 10;
 		View view = inflater.inflate(R.layout.fragment_mine, container, false);
 		getFragmentManager().beginTransaction()
 		.add(R.id.mine_fragment, new FirstFragment()).commit();
@@ -42,6 +44,7 @@ public class MineFragment extends Fragment{
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			MainActivity.whichFragment = 11;
 			View rootView = inflater.inflate(R.layout.fragment_mine_first, container,
 					false);
 			ImageView mine_downloaded_button = (ImageView)rootView.findViewById(R.id.mine_downloaded_button);
@@ -71,6 +74,7 @@ public class MineFragment extends Fragment{
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			MainActivity.whichFragment = 12;
 			View rootView = inflater.inflate(R.layout.fragment_mine_second, container,
 					false);
 			mine_city_listview = (ListView)rootView.findViewById(R.id.mine_city_listview);
@@ -107,6 +111,7 @@ public class MineFragment extends Fragment{
 			@Override
 			public View onCreateView(LayoutInflater inflater, ViewGroup container,
 					Bundle savedInstanceState) {
+				MainActivity.whichFragment = 13;
 				View rootView = inflater.inflate(R.layout.fragment_mine_third, container,
 						false);
 				int cityID = getArguments().getInt("cityID");

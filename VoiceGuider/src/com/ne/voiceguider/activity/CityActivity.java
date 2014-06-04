@@ -62,6 +62,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -101,7 +102,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 
 	private GestureDetector detector;
 	private ViewFlipper viewFlipper;
-
+	private View fragment_city_bigscenelist,fragment_city_map;
+	
 	private ListView city_scene_download_listview;
 	private BigSceneListAdapter mBigSceneListAdapter = null;
 
@@ -110,11 +112,11 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private LocationData locData = null;
 	public MyBDLocationListenner myListener = new MyBDLocationListenner();
 	private boolean isLocating = false;//是否正在定位
-	private GeoPoint nowGeoPoint ;
-	private float nowZoomLevel = 10;
+//	private GeoPoint nowGeoPoint ;
+//	private float nowZoomLevel = 10;//需求不需要
 	//定位图层
 	private MyLocationOverlay myLocationOverlay = null;
-	private Button city_location_button ;
+	private ImageButton city_location_button ;
 	private boolean isFirstLocation = true;//是否首次定位
 	//方向相关
 	private SensorManager sensorManager;
@@ -169,6 +171,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				//x表示手机指向的方位，0表示北,90表示东，180表示南，270表示西
 				float x = event.values[SensorManager.DATA_X];
 				locData.direction = x;//优化百度地图方向不准的问题
+//				myLocationOverlay.setData(locData);
 				//Log.v(TAG, "方向："+x);
 
 			}
@@ -209,8 +212,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		//修改定位数据后刷新图层生效
 		mMapView.refresh();
 
-		city_location_button = (Button)findViewById(R.id.city_location_button);
-		city_location_button.setOnClickListener(new Button.OnClickListener() {
+		city_location_button = (ImageButton)findViewById(R.id.city_location_button);
+		city_location_button.setOnClickListener(new ImageButton.OnClickListener() {
 
 
 			@Override
@@ -219,14 +222,15 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				Log.v(TAG,"city_location_button");
 				if(isLocating==false)
 				{
-					nowGeoPoint = mMapView.getMapCenter();//储存定位前的状态
-					nowZoomLevel = mMapView.getZoomLevel();
+//					nowGeoPoint = mMapView.getMapCenter();//储存定位前的状态
+//					nowZoomLevel = mMapView.getZoomLevel();
 					mLocClient.start();
 					Toast.makeText(CityActivity.this, "正在定位……", Toast.LENGTH_SHORT).show();
 					if(mLocClient.isStarted())
 					{
 						isLocating = true;
-						city_location_button.setText("返回");
+						city_location_button.setImageResource(R.drawable.location_button_return);
+						//city_location_button.setText("返回");
 						Log.v(TAG, "定位打开 ");						
 					}
 					//mLocClient.requestLocation();	
@@ -238,11 +242,11 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 					if(mLocClient.isStarted()==false)
 					{
 						isLocating = false;
-						Toast.makeText(CityActivity.this, "返回上次位置……", Toast.LENGTH_SHORT).show();
-						//mOverlayUtil.showSpan();
-						mMapController.setCenter(nowGeoPoint);//设置地图中心点：上一次的位置
-						mMapController.setZoom(nowZoomLevel);//设置地图缩放级别
-						city_location_button.setText("定位");
+						Toast.makeText(CityActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
+						mOverlayUtil.showSpan();
+//						mMapController.setCenter(nowGeoPoint);//设置地图中心点：上一次的位置
+//						mMapController.setZoom(nowZoomLevel);//设置地图缩放级别
+						city_location_button.setImageResource(R.drawable.location_button_loc);//city_location_button.setText("定位");
 						Log.v(TAG, "定位关闭，返回景点位置 ");
 
 					}
@@ -269,7 +273,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 			if(isFirstLocation)
 			{
 				isLocating = true;
-				city_location_button.setText("返回");
+				city_location_button.setImageResource(R.drawable.location_button_return);//city_location_button.setText("返回");
 				Log.v(TAG, "定位打开 ");						
 			}
 			locData.latitude = location.getLatitude();
@@ -395,8 +399,10 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	 */
 	protected void initFlipper() {
 		viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
-		viewFlipper.addView(LayoutInflater.from(this).inflate(R.layout.fragment_city1, null));
-		viewFlipper.addView(LayoutInflater.from(this).inflate(R.layout.fragment_city2, null));
+		fragment_city_bigscenelist = LayoutInflater.from(this).inflate(R.layout.fragment_city_bigscenelist, null);
+		viewFlipper.addView(fragment_city_bigscenelist);
+		fragment_city_map = LayoutInflater.from(this).inflate(R.layout.fragment_city_map, null);
+		viewFlipper.addView(fragment_city_map);
 		detector = new GestureDetector(this);
 	}
 

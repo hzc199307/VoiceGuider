@@ -20,14 +20,63 @@
             android:layout_marginLeft="10dp"
             android:background="@drawable/abs__ic_ab_back_holo_dark" />
 
-        <TextView
-            android:id="@+id/guider_head_text"
+        <FrameLayout
+            android:id="@+id/guider_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="景点名称"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/guider_scenelist_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="12"
+                    android:background="#00000000"
+                    android:padding="10dip"
+                    android:text="列表"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/guider_scenemap_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="12"
+                    android:background="#00000000"
+                    android:padding="10dip"
+                    android:text="地图"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/guider_cursor1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/abs__ab_transparent_dark_holo" />
+
+                <ImageView
+                    android:id="@+id/guider_cursor2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/abs__ab_transparent_dark_holo"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </FrameLayout>
+
 
         <Button
             android:id="@+id/guider_head_share"
@@ -141,24 +190,53 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <ListView
-            android:id="@+id/smallscene_listview"
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </ListView>
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <ViewFlipper
+                android:id="@+id/flipper"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1" >
+            </ViewFlipper>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/guider_guide"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:text="景点指南"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/guider_route"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:text="推荐路线"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <WebView
             android:id="@+id/guider_text_webview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:visibility="invisible" />
-
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/guider_scenemap"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:clickable="true"
-            android:visibility="gone" />
+        
     </FrameLayout>
 
 </LinearLayout>
