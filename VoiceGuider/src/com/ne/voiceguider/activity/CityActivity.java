@@ -556,7 +556,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	public void initOverlay()
 	{
 
-		mOverlayUtil = new OverlayUtil(mMapView, this);
+		mOverlayUtil = mOverlayUtil = OverlayUtil.newInstanceForBigScenes(mMapView, this);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(cityID));
 		//		/**

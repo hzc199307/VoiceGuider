@@ -11,10 +11,12 @@ import com.ne.voiceguider.R;
 import com.ne.voiceguider.VoiceGuiderApplication;
 import com.ne.voiceguider.activity.CityActivity.MyMKOfflineMapListener;
 import com.ne.voiceguider.adapter.SmallSceneAdapter;
+import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.fragment.HikingFragment.MyBDLocationListenner;
 import com.ne.voiceguider.util.LocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtils;
 import com.ne.voiceguider.util.OfflineMapUtil;
+import com.ne.voiceguider.util.OverlayUtil;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -113,6 +115,7 @@ public class GuiderActivity extends ActionBarActivity {
 
 		initMap();
 		initLocation();
+		initOverlay();
 		guider_head();
 		guider_music();
 		webview();
@@ -197,7 +200,7 @@ public class GuiderActivity extends ActionBarActivity {
 					{
 						isLocating = false;
 						Toast.makeText(GuiderActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
-						//mOverlayUtil.showSpan();
+						mOverlayUtil.showSpan();
 						//						mMapController.setCenter(nowGeoPoint);//设置地图中心点：上一次的位置
 						//						mMapController.setZoom(nowZoomLevel);//设置地图缩放级别
 						guider_location_button.setImageResource(R.drawable.location_button_loc);//city_location_button.setText("定位");
@@ -245,6 +248,19 @@ public class GuiderActivity extends ActionBarActivity {
 			}
 		}
 	}
+	/**
+	 * 地图上面插标
+	 */
+	private OverlayUtil mOverlayUtil;
+	public void initOverlay()
+	{
+
+		mOverlayUtil = OverlayUtil.newInstanceForSmallScenes(mMapView, this);
+		CitySceneDao mCitySceneDao = new CitySceneDao(this);
+		mOverlayUtil.setListObject(mCitySceneDao.getSmallScenes(bigSceneID));
+		mOverlayUtil.showAll();
+	}
+	
 	private void guider_music() {
 		// music player
 		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
@@ -349,7 +365,24 @@ public class GuiderActivity extends ActionBarActivity {
 					if(isMapNow == false)
 					{
 						RightToLeft();
+						Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
+							@Override
+							public void run(){
+								try {
+									Thread.currentThread().sleep(100);
+									mOverlayUtil.showSpan();
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						};
+						thread.start();
 						isMapNow = true;
+					}
+					else//如果正处于地图位置  返回景点位置
+					{
+						mOverlayUtil.showSpan();
+						Toast.makeText(GuiderActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
 					}
 					guider_cursor2.setVisibility(View.VISIBLE);
 					guider_cursor1.setVisibility(View.INVISIBLE);

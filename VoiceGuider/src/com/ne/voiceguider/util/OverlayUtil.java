@@ -51,7 +51,7 @@ public class OverlayUtil<Class> {
 	/**
 	 * 地图上面插标
 	 */
-	private MyOverlay mOverlay = null;
+	private ItemizedOverlay mOverlay = null;
 	private PopupOverlay mButtonPop = null;
 	private TextView popupText = null;
 	private View viewCache = null;
@@ -68,18 +68,37 @@ public class OverlayUtil<Class> {
 	private TextOverlay mTextOverlay = null;
 	private Bundle nowBundle = new Bundle();     
 
+	public static OverlayUtil newInstanceForBigScenes(MapView mapView,Context context)
+	{
+		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
+		mOverlayUtil.initForBigScenes();
+		return mOverlayUtil;
+	}
+
+	public static OverlayUtil newInstanceForSmallScenes(MapView mapView,Context context)
+	{
+		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
+		mOverlayUtil.initForSmallScenes();
+		return mOverlayUtil;
+	}
+
 	public OverlayUtil(MapView mapView,Context context) {
 		// TODO Auto-generated constructor stub
 		this.mMapView = mapView;
 		this.mContext = context;
+
+
+	}
+	public void initForBigScenes()
+	{
 		/**
 		 * 创建自定义overlay
 		 */
-		mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.location_share_icon_green),mMapView);
+		mOverlay = new MyOverlayForBigScenes(mContext.getResources().getDrawable(R.drawable.location_share_icon_green),mMapView);
 		//mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
 		/**
 		 * 将overlay 添加至MapView中
-		 */
+		 */ 
 		mMapView.getOverlays().add(mOverlay);
 
 
@@ -89,14 +108,41 @@ public class OverlayUtil<Class> {
 		mMapView.refresh();
 		mMapController =mMapView.getController();
 		//PopupOverlay 只能在地图上面标记一处
-		mButtonPop = new PopupOverlay(mMapView, new MyPopupClickListener()); 
+		mButtonPop = new PopupOverlay(mMapView, new MyPopupClickForBigScenesListener()); 
 
 		viewCache = LayoutInflater.from(mContext).inflate(R.layout.city_scene_overlay_layout, null);
 		popupInfo = (View) viewCache.findViewById(R.id.popinfo);
 		popupLeft = (View) viewCache.findViewById(R.id.popleft);
 		popupRight = (View) viewCache.findViewById(R.id.popright);
 		popupText =(TextView) viewCache.findViewById(R.id.textcache);
+	}
 
+	public void initForSmallScenes()
+	{
+		/**
+		 * 创建自定义overlay
+		 */
+		mOverlay = new MyOverlayForSmallScenes(mContext.getResources().getDrawable(R.drawable.location_share_icon_green),mMapView);
+		//mOverlay = new MyOverlay(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon),mMapView);
+		/**
+		 * 将overlay 添加至MapView中
+		 */ 
+		mMapView.getOverlays().add(mOverlay);
+
+
+		textItemList = new ArrayList<MyTextItem>();
+		mTextOverlay = new TextOverlay(mMapView);
+		mMapView.getOverlays().add(mTextOverlay);
+		mMapView.refresh();
+		mMapController =mMapView.getController();
+		//PopupOverlay 只能在地图上面标记一处
+		mButtonPop = new PopupOverlay(mMapView, new MyPopupClickForSmallScenesListener()); 
+
+		viewCache = LayoutInflater.from(mContext).inflate(R.layout.city_scene_overlay_layout, null);
+		popupInfo = (View) viewCache.findViewById(R.id.popinfo);
+		popupLeft = (View) viewCache.findViewById(R.id.popleft);
+		popupRight = (View) viewCache.findViewById(R.id.popright);
+		popupText =(TextView) viewCache.findViewById(R.id.textcache);
 	}
 
 	public void setListObject(List<Class> listObject)
@@ -143,7 +189,7 @@ public class OverlayUtil<Class> {
 	public void startActivity(){
 		// TODO Auto-generated constructor stub
 		Intent intent = new Intent(mContext,GuiderActivity.class); // 跳转到大景点下的小景点详情页面 
-		                  //创建Bundle对象 
+		//创建Bundle对象 
 		intent.putExtras(nowBundle); //把Bundle塞入Intent里面   
 		mContext.startActivity(intent);   
 	}
@@ -196,7 +242,7 @@ public class OverlayUtil<Class> {
 			this.pt = pt;
 		}
 	}
-	public class MyPopupClickListener implements PopupClickListener
+	public class MyPopupClickForBigScenesListener implements PopupClickListener
 	{
 		@Override
 		public void onClickedPopup(int index) {
@@ -209,9 +255,22 @@ public class OverlayUtil<Class> {
 			}
 		}
 	}
-	public class MyOverlay extends ItemizedOverlay{
+	public class MyPopupClickForSmallScenesListener implements PopupClickListener
+	{
+		@Override
+		public void onClickedPopup(int index) {
+			Log.v(TAG, "onClickedPopup startActivity");
+			// TODO Auto-generated method stub
+			if ( index == 0){
+			}
+			else if(index == 1){
+				//startActivity();
+			}
+		}
+	}
+	public class MyOverlayForBigScenes extends ItemizedOverlay{
 
-		public MyOverlay(Drawable defaultMarker, MapView mapView) {
+		public MyOverlayForBigScenes(Drawable defaultMarker, MapView mapView) {
 			super(defaultMarker, mapView);
 		}
 
@@ -236,6 +295,52 @@ public class OverlayUtil<Class> {
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
 
 
+			}
+			else
+			{
+				isPopShowed=false;
+				mButtonPop.hidePop();
+				Log.v("OverlayUtil", "onTap 显示景点名称text 关闭跳转pop");
+			}
+			return true;
+		}
+
+		//处理非overlay的点击事件
+		@Override
+		public boolean onTap(GeoPoint pt , MapView mMapView){
+			if (mButtonPop != null){
+				mButtonPop.hidePop();
+			}
+			return false;
+		}
+
+	}
+	
+	public class MyOverlayForSmallScenes extends ItemizedOverlay{
+
+		public MyOverlayForSmallScenes(Drawable defaultMarker, MapView mapView) {
+			super(defaultMarker, mapView);
+		}
+
+		private boolean isPopShowed = false;
+		@Override
+		public boolean onTap(int index){
+			mCurItem = getItem(index);
+			popupText.setText(getItem(index).getTitle());
+			if(isPopShowed==false)//显示有按钮的pop
+			{
+				SmallScene mSmallScene = (SmallScene)(listObject.get(index));
+				nowBundle.putString("smallSceneName", mSmallScene.getSmallSceneName());            //装入数据 
+				Log.v(TAG, mSmallScene.getSmallSceneName());
+				nowBundle.putInt("bigSceneID", mSmallScene.getSmallSceneID());
+				isPopShowed=true;
+				Bitmap[] bitMaps={
+						BMapUtil.getBitmapFromView(popupLeft), 		
+						BMapUtil.getBitmapFromView(popupInfo), 		
+						BMapUtil.getBitmapFromView(popupRight)		
+				};
+				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),32);
+				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
 			}
 			else
 			{
