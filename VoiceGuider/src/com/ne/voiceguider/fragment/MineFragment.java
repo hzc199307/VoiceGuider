@@ -9,42 +9,50 @@ import com.ne.voiceguider.adapter.CityHadListAdapter;
 import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.bean.CityBean;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class MineFragment extends Fragment{
 
+	private final String TAG = "MineFragment";
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		MainActivity.whichFragment = 10;
 		View view = inflater.inflate(R.layout.fragment_mine, container, false);
 		getFragmentManager().beginTransaction()
 		.add(R.id.mine_fragment, new FirstFragment()).commit();
-
-
 		return view;
 	}
 
 	public static class FirstFragment extends Fragment {
 
+		private final String TAG = "FirstFragment";
+		private Button mine_head_edit;
+		private ImageButton mine_head_back;
+		private TextView mine_head_text;
+		
 		public FirstFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			MainActivity.whichFragment = 11;
 			View rootView = inflater.inflate(R.layout.fragment_mine_first, container,
 					false);
 			ImageView mine_downloaded_button = (ImageView)rootView.findViewById(R.id.mine_downloaded_button);
@@ -60,12 +68,27 @@ public class MineFragment extends Fragment{
 					transaction.commit();
 				}
 			});
+			mine_head_back = (ImageButton)((Activity) inflater.getContext()).findViewById(R.id.mine_head_back);
+			mine_head_edit = (Button)((Activity) inflater.getContext()).findViewById(R.id.mine_head_edit);
+			mine_head_back.setVisibility(View.GONE);
+			mine_head_edit.setVisibility(View.GONE);
+			mine_head_text = (TextView)((Activity) inflater.getContext()).findViewById(R.id.mine_head_text);
 			return rootView;
+		}
+		@Override
+		public void onResume() {
+			super.onResume();
+			mine_head_text.setText("我的旅程");
+			MainActivity.whichFragment = 11;
+			Log.v(TAG,"onResume");
 		}
 	}
 
 	public static class SecondFragment extends Fragment {
 
+		private TextView mine_head_text;
+		private Button mine_head_edit;
+		private ImageButton mine_head_back;
 		private ListView mine_city_listview;
 		private CityHadListAdapter mCityHadListAdapter ;
 		public SecondFragment() {
@@ -77,7 +100,7 @@ public class MineFragment extends Fragment{
 			MainActivity.whichFragment = 12;
 			View rootView = inflater.inflate(R.layout.fragment_mine_second, container,
 					false);
-			mine_city_listview = (ListView)rootView.findViewById(R.id.mine_city_listview);
+			mine_city_listview = (ListView)rootView.findViewById(R.id.mine_cityhad_listview);
 			mCityHadListAdapter = new CityHadListAdapter(inflater.getContext());
 			mine_city_listview.setAdapter(mCityHadListAdapter);
 			mine_city_listview.setOnItemClickListener(new OnItemClickListener() {
@@ -98,13 +121,36 @@ public class MineFragment extends Fragment{
 					transaction.commit(); 
 				}
 			});
+			mine_head_back = (ImageButton)((Activity) inflater.getContext()).findViewById(R.id.mine_head_back);
+			mine_head_edit = (Button)((Activity) inflater.getContext()).findViewById(R.id.mine_head_edit);
+			mine_head_back.setVisibility(View.VISIBLE);
+			mine_head_edit.setVisibility(View.VISIBLE);
+			mine_head_back.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					getFragmentManager().popBackStack();
+					
+
+				}
+			});
+			mine_head_text = (TextView)((Activity) inflater.getContext()).findViewById(R.id.mine_head_text);
 			return rootView;
+		}
+		@Override
+		public void onResume() {
+			super.onResume();
+			mine_head_text.setText("已下载");
+			MainActivity.whichFragment = 12;
 		}
 		
 		public static class ThirdFragment extends Fragment {
 
+			private final String TAG = "ThirdFragment";
+			private Button mine_head_edit;
 			private ListView mine_bigscene_listview;
 			private BigSceneHadListAdapter mBigSceneHadListAdapter ;
+			private TextView citymaphad_name_textview;
 			public ThirdFragment() {
 			}
 
@@ -115,10 +161,27 @@ public class MineFragment extends Fragment{
 				View rootView = inflater.inflate(R.layout.fragment_mine_third, container,
 						false);
 				int cityID = getArguments().getInt("cityID");
-				mine_bigscene_listview = (ListView)rootView.findViewById(R.id.mine_bigscene_listview);
+				String cityName = getArguments().getString("cityName");
+				mine_bigscene_listview = (ListView)rootView.findViewById(R.id.mine_bigscenehad_listview);
 				mBigSceneHadListAdapter = new BigSceneHadListAdapter(inflater.getContext(),cityID);
 				mine_bigscene_listview.setAdapter(mBigSceneHadListAdapter);
+				
+				mine_head_edit = (Button)((Activity) inflater.getContext()).findViewById(R.id.mine_head_edit);
+				mine_head_edit.setVisibility(View.VISIBLE);
+				citymaphad_name_textview = (TextView)rootView.findViewById(R.id.citymaphad_name_textview);
+				citymaphad_name_textview.setText(cityName);
 				return rootView;
+			}
+			@Override
+			public void onResume() {
+				super.onResume();
+				MainActivity.whichFragment = 13;
+			}
+			@Override
+			public void onDestroyView() {
+				// TODO Auto-generated method stub
+				super.onDestroyView();
+				Log.v(TAG,"onDestroyView");
 			}
 		}
 	}

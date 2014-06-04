@@ -219,7 +219,7 @@ public class MainActivity extends ActionBarActivity {
 		case KeyEvent.KEYCODE_BACK:
 		{
 			Log.v(TAG, viewPager.getCurrentItem()+" "+whichFragment);
-			if(viewPager.getCurrentItem()==1&&whichFragment!=10&&whichFragment!=11)
+			if(viewPager.getCurrentItem()==1&&whichFragment>=12&&whichFragment<=19)
 			{
 				//如果在里层的fragment 就执行原版的返回
 				super.onKeyDown(keyCode, event);

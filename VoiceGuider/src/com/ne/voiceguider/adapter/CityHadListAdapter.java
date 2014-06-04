@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ne.voiceguider.R;
@@ -63,8 +64,11 @@ public class CityHadListAdapter extends BaseAdapter{
 
 			if (convertView == null) {// 这样做可以使view循环利用，而不会有多少个item就产生多少个view
 				holder = new Holder();
-				convertView = inflater.inflate(R.layout.item_citybean, null);// 引用布局文件
-				//holder.citybean_textview = (TextView) convertView.findViewById(R.id.citybean_textview);	
+				convertView = inflater.inflate(R.layout.item_cityhad, null);// 引用布局文件
+				holder.cityhad_name_textview = (TextView) convertView.findViewById(R.id.cityhad_name_textview);	
+				holder.cityhad_pinyin_textview = (TextView) convertView.findViewById(R.id.cityhad_pinyin_textview);	
+				holder.cityhad_right_textView = (TextView) convertView.findViewById(R.id.cityhad_right_textView);	
+				holder.cityhad_right_imageView = (ImageView) convertView.findViewById(R.id.cityhad_right_imageView);	
 				convertView.setTag(holder);// 如果是新产生的view，则设置tag
 			} 
 			else
@@ -79,11 +83,15 @@ public class CityHadListAdapter extends BaseAdapter{
 //			else {
 //				holder.citybean_textview.setText("error");
 //			}
+			holder.cityhad_name_textview.setText(myCityBean.getCityName());
+			holder.cityhad_pinyin_textview.setText(myCityBean.getCityPinyin());
+			holder.cityhad_right_textView.setText("已离线");
 			return convertView;
 		}
 
 		final class Holder {
-			public TextView citybean_textview;
+			public TextView cityhad_name_textview,cityhad_pinyin_textview,cityhad_right_textView;
+			public ImageView cityhad_right_imageView;
 		}
 
 		/**

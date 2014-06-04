@@ -93,7 +93,8 @@
     <ListView 
         android:id="@+id/city_scene_download_listview"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_marginTop="1dp" >
         
     </ListView>
 

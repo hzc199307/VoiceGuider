@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android_custom="http://schemas.android.com/apk/res/com.ne.voiceguider"
+    android:id="@+id/bigscenehad_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:background="#ffffff" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp" >
+
+        <TextView
+            android:id="@+id/bigscenehad_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="城市名称"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/bigscenehad_pinyin_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="城市拼音"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/bigscenehad_right_imageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#00000000"
+            android:scaleType="centerInside"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/delete_style" />
+        <TextView 
+            android:id="@+id/bigscenehad_right_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="删除"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+</RelativeLayout>
