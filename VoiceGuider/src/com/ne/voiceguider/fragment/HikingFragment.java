@@ -59,7 +59,7 @@ public class HikingFragment extends Fragment {
 	@Override  
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,  
 			Bundle savedInstanceState) {  
-		MainActivity.whichFragment = 0;
+		Log.v(TAG, "onCreateView");
 		mContext = inflater.getContext();
 		View view = inflater.inflate(R.layout.fragment_hiking, container, false);
 
@@ -78,6 +78,7 @@ public class HikingFragment extends Fragment {
 				Bundle bundle = new Bundle();                           //创建Bundle对象   
 				bundle.putString("cityName", mCityBean.getCityName());     //装入数据  
 				bundle.putInt("cityID", mCityBean.getCityID());
+				bundle.putString("cityPinyin", mCityBean.getCityPinyin());
 				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
 				startActivity(intent);                                     //开始切换 
 			}

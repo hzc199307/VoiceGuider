@@ -87,7 +87,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private String TAG = "CityActivity";
 	private MapView mMapView = null;
 	private OfflineMapUtil mOfflineMapUtil = null;
-	private String cityName = null;
+	private String cityName = null,cityPinyin=null;
 	private int cityID,cityDownloadId = -1;
 	private MKOLUpdateElement cityUpdateInfo = null;
 	private Button city_scenelist_button,city_scenemap_button,city_head_back;
@@ -325,7 +325,9 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				Intent intent = new Intent(CityActivity.this,GuiderActivity.class); // 跳转到城市景点详情页面 
 				Bundle bundle = new Bundle();                           //创建Bundle对象   
 				bundle.putString("bigSceneName", mBigScene.getBigSceneName());     //装入数据  
+				bundle.putString("bigScenePinyin", mBigScene.getBigScenePinyin());
 				bundle.putInt("bigSceneID", mBigScene.getBigSceneID());
+				bundle.putString("cityPinyin", cityPinyin);
 				intent.putExtras(bundle);                            //把Bundle塞入Intent里面   
 				startActivity(intent);                                     //开始切换 
 			}
@@ -367,6 +369,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 			Bundle b = intent.getExtras();
 			cityName = b.getString("cityName");
 			cityID = b.getInt("cityID");
+			cityPinyin = b.getString("cityPinyin");
 			cityDownloadId = mOfflineMapUtil.search(cityName);
 			cityUpdateInfo = mOfflineMapUtil.getUpdateInfo(cityDownloadId);
 			Log.e(TAG,cityName+" "+cityDownloadId+" "+(cityUpdateInfo==null));
@@ -556,7 +559,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	public void initOverlay()
 	{
 
-		mOverlayUtil = mOverlayUtil = OverlayUtil.newInstanceForBigScenes(mMapView, this);
+		mOverlayUtil = mOverlayUtil = OverlayUtil.newInstanceForBigScenes(mMapView, this,cityPinyin);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(cityID));
 		//		/**

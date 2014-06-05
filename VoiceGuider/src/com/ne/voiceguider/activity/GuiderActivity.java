@@ -11,10 +11,13 @@ import com.ne.voiceguider.R;
 import com.ne.voiceguider.VoiceGuiderApplication;
 import com.ne.voiceguider.activity.CityActivity.MyMKOfflineMapListener;
 import com.ne.voiceguider.adapter.SmallSceneAdapter;
+import com.ne.voiceguider.bean.BigScene;
+import com.ne.voiceguider.bean.SmallScene;
 import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.fragment.HikingFragment.MyBDLocationListenner;
+import com.ne.voiceguider.service.VoicePlayerService;
 import com.ne.voiceguider.util.LocationUtil;
-import com.ne.voiceguider.util.MusicPlayerUtils;
+import com.ne.voiceguider.util.MusicPlayerUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
 
@@ -45,6 +48,8 @@ import android.view.animation.TranslateAnimation;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -67,7 +72,7 @@ import android.widget.ViewFlipper;
 public class GuiderActivity extends ActionBarActivity {
 
 	private final String TAG = "GuiderActivity";
-	private String bigSceneName ;
+	private String bigSceneName,cityPinyin,bigScenePinyin ;
 	private int bigSceneID ;
 	//head
 	private Button guider_scenelist_button,guider_scenemap_button;//private TextView guider_head_text ;
@@ -86,16 +91,9 @@ public class GuiderActivity extends ActionBarActivity {
 	private View fragment_guider_map,fragment_guider_list;
 	private Boolean isMapNow;
 
-	// music player
-	private SeekBar seekBar;
-	private Button startMedia;
-	private Button stop;
-	private MediaPlayer mp;  
-	boolean isPlaying= false;
-	TextView text_place_name;
-	TextView text_time_already;
-	TextView text_time_total;
 
+
+	private Intent serviceIntent;
 	Handler mHandler= null;
 
 	@Override
@@ -106,13 +104,20 @@ public class GuiderActivity extends ActionBarActivity {
 		if ( intent.hasExtra("bigSceneName")  ){
 			Bundle b = intent.getExtras();
 			bigSceneName = b.getString("bigSceneName");
-			
+
 		}
 		if ( intent.hasExtra("bigSceneID")  ){
 			Bundle b = intent.getExtras();
 			bigSceneID = b.getInt("bigSceneID");
 		}
-
+		if ( intent.hasExtra("cityPinyin")  ){
+			Bundle b = intent.getExtras();
+			cityPinyin = b.getString("cityPinyin");
+		}
+		if ( intent.hasExtra("bigScenePinyin")  ){
+			Bundle b = intent.getExtras();
+			bigScenePinyin = b.getString("bigScenePinyin");
+		}
 		initMap();
 		initLocation();
 		initOverlay();
@@ -123,9 +128,10 @@ public class GuiderActivity extends ActionBarActivity {
 
 	private MapView mMapView = null;
 	private MapController mMapController;
+	private VoiceGuiderApplication app;
 	public void initMap()
 	{
-		VoiceGuiderApplication app = (VoiceGuiderApplication)this.getApplication();
+		app = (VoiceGuiderApplication)this.getApplication();
 		if (app.mBMapManager == null) {
 			app.mBMapManager = new BMapManager(getApplicationContext());
 			/**
@@ -260,19 +266,55 @@ public class GuiderActivity extends ActionBarActivity {
 		mOverlayUtil.setListObject(mCitySceneDao.getSmallScenes(bigSceneID));
 		mOverlayUtil.showAll();
 	}
-	
+	private VoicePlayerService.MediaBinder mmMediaBinder;
+	private TextView scene_music_place_name;
+	// music player
+	private SeekBar seekBar;
+	private Button startMedia;
+	private Button stop;
+	//	private MediaPlayer mp;  
+	boolean isPlaying= false;
+	int playIndex = 0;
+	TextView text_place_name;
+	TextView text_time_already;
+	TextView text_time_total;
 	private void guider_music() {
 		// music player
-		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
-
+		seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
 		text_place_name= (TextView) findViewById(R.id.scene_music_place_name);
-
 		text_time_already= (TextView) findViewById(R.id.scene_music_time_already);
 		text_time_total= (TextView) findViewById(R.id.scene_music_time_total);
+		mmMediaBinder = app.mMediaBinder;
+		Log.v(TAG, (mmMediaBinder==null)+"");
+		scene_music_place_name = (TextView)findViewById(R.id.scene_music_place_name);
+		if(mmMediaBinder.isPlaying())
+		{
+			//如果正在播放的小景点属于当前大景点 那就继续播放  否则就停
+			if(mmMediaBinder.getBigScenePinyin().equals(bigScenePinyin))
+			{
+				playIndex = mmMediaBinder.getPosition();
+				scene_music_place_name.setText(mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallSceneName());
+				seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+			}
+			else
+				mmMediaBinder.stop();
 
-		seekBar = (SeekBar) findViewById(R.id.scene_music_seekbar);
+		}
+		else
+		{
+			mmMediaBinder.stop();
+			if(mSmallSceneAdapter.getCount()>0)
+			{
+				scene_music_place_name.setText(mSmallSceneAdapter.getItem(0).getSmallSceneName());
+				Log.v(TAG,mSmallSceneAdapter.getItem(0).getSmallScenePinyin());
+				mmMediaBinder.setDataSource(0,cityPinyin,bigScenePinyin,mSmallSceneAdapter.getItem(0).getSmallScenePinyin());
+			}
+		}
+
+		//		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
+
 		seekBar.setProgress(0);
-		seekBar.setMax(mp.getDuration());
+		seekBar.setMax(mmMediaBinder.getDuration());
 		updateMusicProgressText();
 		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			int lastProgress;
@@ -300,7 +342,7 @@ public class GuiderActivity extends ActionBarActivity {
 					return;
 				}
 
-				mp.seekTo(lastProgress);
+				mmMediaBinder.seekTo(lastProgress);
 				// update timer progress again
 				updateMusicProgressText();
 				if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1){
@@ -308,12 +350,15 @@ public class GuiderActivity extends ActionBarActivity {
 				}
 
 				if(isPlaying){
-					mp.pause();
+					mmMediaBinder.pause();
+					mHandler.removeCallbacks(mUpdateTimeTask);
+					//					mp.pause();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
 					isPlaying= false;
 				}
 				else{
-					mp.start();
+					mmMediaBinder.play();
+					//					mp.start();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
 					isPlaying= true;
 				}
@@ -409,6 +454,7 @@ public class GuiderActivity extends ActionBarActivity {
 	}
 
 	//地图和列表的flipper
+	private SmallSceneAdapter mSmallSceneAdapter;
 	void initFlipper() {
 		isMapNow = false;
 		mViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
@@ -417,7 +463,37 @@ public class GuiderActivity extends ActionBarActivity {
 		fragment_guider_map = LayoutInflater.from(this).inflate(R.layout.fragment_guider_map, null);
 		mViewFlipper.addView(fragment_guider_map);
 		smallscene_listview = (ListView)fragment_guider_list.findViewById(R.id.smallscene_listview);
-		smallscene_listview.setAdapter(new SmallSceneAdapter(this, bigSceneID));
+		mSmallSceneAdapter = new SmallSceneAdapter(this, bigSceneID);
+		smallscene_listview.setAdapter(mSmallSceneAdapter);
+		smallscene_listview.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				SmallScene mSmallScene = mSmallSceneAdapter.getItem(position);
+				if(isPlaying&&playIndex==position)
+				{
+					//点到 正在播放的item自己
+				}
+				else
+				{
+					playIndex = position;
+					//正在播放别的
+					Log.v(TAG, mSmallScene.getSmallSceneName());
+					scene_music_place_name.setText(mSmallSceneAdapter.getItem(position).getSmallSceneName());
+					mmMediaBinder.stop();
+					seekBar.setProgress(0);
+					mmMediaBinder.setDataSource(position,cityPinyin,bigScenePinyin,mSmallSceneAdapter.getItem(position).getSmallScenePinyin());
+					seekBar.setProgress(0);
+					Log.v(TAG, "Duration: "+mmMediaBinder.getDuration());
+					seekBar.setMax(mmMediaBinder.getDuration());
+					updateMusicProgressText();
+					mmMediaBinder.play();
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+					isPlaying= true;
+				}
+			}
+		});
 	}
 	void leftToRight()
 	{
@@ -554,20 +630,25 @@ public class GuiderActivity extends ActionBarActivity {
 	 * */
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
-			int totalDuration = mp.getDuration();
-			int currentDuration = mp.getCurrentPosition();
+			int totalDuration = mmMediaBinder.getDuration();
+			int currentDuration = mmMediaBinder.getCurrentPosition();
 
 			// Updating progress bar
 			seekBar.setProgress(currentDuration);
 
 			// Displaying Total Duration time
-			text_time_total.setText(""+ MusicPlayerUtils.milliSecondsToTimer(totalDuration));
+			text_time_total.setText(""+ MusicPlayerUtil.milliSecondsToTimer(totalDuration));
 			// Displaying time completed playing
-			text_time_already.setText(""+ MusicPlayerUtils.milliSecondsToTimer(currentDuration));
+			text_time_already.setText(""+ MusicPlayerUtil.milliSecondsToTimer(currentDuration));
 
 			// Running this thread after 100 milliseconds
 			mHandler.postDelayed(this, 100);
 		}
+	};
+
+	public void onDestroy() {
+		mLocationUtil.stop();
+		super.onDestroy();
 	};
 
 }

@@ -1,8 +1,18 @@
 package com.ne.voiceguider.util;
 
+import java.io.File;
+import java.io.IOException;
 
-public class MusicPlayerUtils {
+import com.ne.voiceguider.activity.GuiderActivity;
 
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+
+
+public class MusicPlayerUtil {
+
+	private final static String TAG = "MusicPlayerUtil";
 	/**
 	 * Function to convert milliseconds time to
 	 * Timer Format
@@ -65,4 +75,28 @@ public class MusicPlayerUtils {
         // return current duration in milliseconds
         return currentDuration * 1000;
     }
+    
+    private static boolean sdCardExit = false;
+    private static File myVoiceDir;
+    private static File myVoiceFile = null;
+    public static String getVoicePath(String city,String bigScene,String smallScene) {
+    	String myVoicePath = null;
+    	/* 判断SD Card是否插入 */
+    	sdCardExit = Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED);
+		/* 取得SD Card路径做为录音的文件位置 */
+		if (sdCardExit){
+			myVoiceDir = Environment.getExternalStorageDirectory();
+			String path = myVoiceDir.getPath()+"/VoiceGuider/voice/"+city+"/"+bigScene+"/"+smallScene+".mp3";
+			myVoiceFile = new File(path);
+			if (!myVoiceFile.exists()) {
+				Log.v(TAG,"" );;
+			}
+			return myVoiceFile.getPath();
+		}
+		else
+			Log.v(TAG,"请检查 内存卡 是否可用！" );//Toast.makeText(, "请检查 内存卡 是否可用！", Toast.LENGTH_SHORT).show();
+		return null;
+    }
+    
 }

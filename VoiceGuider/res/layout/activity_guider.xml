@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="9dp"
-            android:text="勤政殿"
+            android:text="小景点"
             android:textSize="20sp" />
 
         <LinearLayout

@@ -23,6 +23,7 @@ public class BigSceneListAdapter extends BaseAdapter{
 	private final String TAG = "BigSceneListAdapter";
 	private List<BigScene> listData = null;
 	private LayoutInflater inflater = null;
+	
 
 	public BigSceneListAdapter(Context context,int cityID) {
 		CitySceneDao mCitySceneDao = new CitySceneDao(context);

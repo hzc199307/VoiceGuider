@@ -67,11 +67,15 @@ public class OverlayUtil<Class> {
 	private MyTextItem mCurTextItem = null;
 	private TextOverlay mTextOverlay = null;
 	private Bundle nowBundle = new Bundle();     
+	
+	private String cityPinyin = null;
 
-	public static OverlayUtil newInstanceForBigScenes(MapView mapView,Context context)
+	public static OverlayUtil newInstanceForBigScenes(MapView mapView,Context context,String cityPinyin)
 	{
+		
 		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
 		mOverlayUtil.initForBigScenes();
+		mOverlayUtil.setCityPinyin(cityPinyin);
 		return mOverlayUtil;
 	}
 
@@ -87,7 +91,9 @@ public class OverlayUtil<Class> {
 		this.mMapView = mapView;
 		this.mContext = context;
 
-
+	}
+	public void setCityPinyin(String cityPinyin) {
+		this.cityPinyin = cityPinyin;
 	}
 	public void initForBigScenes()
 	{
@@ -285,6 +291,8 @@ public class OverlayUtil<Class> {
 				nowBundle.putString("bigSceneName", mBigScene.getBigSceneName());            //装入数据 
 				Log.v(TAG, mBigScene.getBigSceneName());
 				nowBundle.putInt("bigSceneID", mBigScene.getBigSceneID());
+				nowBundle.putString("bigScenePinyin", mBigScene.getBigScenePinyin());
+				nowBundle.putString("cityPinyin", cityPinyin);
 				isPopShowed=true;
 				Bitmap[] bitMaps={
 						BMapUtil.getBitmapFromView(popupLeft), 		

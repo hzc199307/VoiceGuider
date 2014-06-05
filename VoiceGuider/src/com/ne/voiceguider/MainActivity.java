@@ -2,6 +2,7 @@ package com.ne.voiceguider;
 
 import com.ne.voiceguider.fragment.HikingFragment;
 import com.ne.voiceguider.fragment.MineFragment;
+import com.ne.voiceguider.service.VoicePlayerService;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
@@ -47,8 +48,26 @@ public class MainActivity extends ActionBarActivity {
 		InitImageView();
 		InitTextView();
 		InitViewPager();
+		initVoicePlayerService();
 	}
 
+	/*
+	 * 有关 VoicePlayerService 的绑定
+	 */
+	VoiceGuiderApplication app ;
+	public void initVoicePlayerService()
+	{
+		app = (VoiceGuiderApplication)this.getApplication();
+		Intent serviceIntent = new Intent(this, VoicePlayerService.class);
+		bindService(serviceIntent, app.mConnection, BIND_AUTO_CREATE);
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		unbindService(app.mConnection);
+	}
+	
 	private void InitViewPager() {
 		viewPager=(ViewPager) findViewById(R.id.main_viewPager);
 		mMyFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager() );    
