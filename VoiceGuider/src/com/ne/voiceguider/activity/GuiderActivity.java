@@ -76,7 +76,8 @@ public class GuiderActivity extends ActionBarActivity {
 	private int bigSceneID ;
 	//head
 	private Button guider_scenelist_button,guider_scenemap_button;//private TextView guider_head_text ;
-	private Button guider_head_back,scene_voice_text_button;
+	private Button scene_voice_text_button;
+	private ImageButton guider_head_back;
 
 	private ImageView guider_cursor1, guider_cursor2;
 
@@ -292,9 +293,10 @@ public class GuiderActivity extends ActionBarActivity {
 			//如果正在播放的小景点属于当前大景点 那就继续播放  否则就停
 			if(mmMediaBinder.getBigScenePinyin().equals(bigScenePinyin))
 			{
+				isPlaying = true;
 				playIndex = mmMediaBinder.getPosition();
 				scene_music_place_name.setText(mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallSceneName());
-				seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+				seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
 			}
 			else
 				mmMediaBinder.stop();
@@ -327,6 +329,7 @@ public class GuiderActivity extends ActionBarActivity {
 					if(Math.abs(progress-lastProgress)*1.0 / seekBar.getMax() > 0.1){
 						seekBar.setProgress(lastProgress);
 					} else {
+						//seekBar.setThumb(getResources().getDrawable(R.drawable.play_ctrl_drag));
 						lastProgress = progress;
 						isThumbClick= true;
 					}
@@ -353,13 +356,13 @@ public class GuiderActivity extends ActionBarActivity {
 					mmMediaBinder.pause();
 					mHandler.removeCallbacks(mUpdateTimeTask);
 					//					mp.pause();
-					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause));
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_play_style));
 					isPlaying= false;
 				}
 				else{
 					mmMediaBinder.play();
 					//					mp.start();
-					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
 					isPlaying= true;
 				}
 			}
@@ -443,8 +446,8 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_scenemap_button.setOnClickListener(switchOnClickListener);
 
 
-		guider_head_back= (Button)findViewById(R.id.guider_head_back);
-		guider_head_back.setOnClickListener(new Button.OnClickListener() {
+		guider_head_back= (ImageButton)findViewById(R.id.guider_head_back);
+		guider_head_back.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -489,7 +492,7 @@ public class GuiderActivity extends ActionBarActivity {
 					seekBar.setMax(mmMediaBinder.getDuration());
 					updateMusicProgressText();
 					mmMediaBinder.play();
-					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_playing));
+					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
 					isPlaying= true;
 				}
 			}
@@ -648,6 +651,7 @@ public class GuiderActivity extends ActionBarActivity {
 
 	public void onDestroy() {
 		mLocationUtil.stop();
+		mLocationUtil = null;
 		super.onDestroy();
 	};
 

@@ -147,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 			{
 			case 0:return new HikingFragment();
 			case 1:return new MineFragment();//TODO
-			case 2:return new HikingFragment();//TODO
+			case 2:return new MineFragment();//TODO
 			default:return null;
 			}
 		}  

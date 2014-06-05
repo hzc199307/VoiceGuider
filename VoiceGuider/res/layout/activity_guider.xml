@@ -11,14 +11,14 @@
         android:layout_height="45dp"
         android:background="@drawable/hiking_head" >
 
-        <Button
+        <ImageButton 
             android:id="@+id/guider_head_back"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/abs__ic_ab_back_holo_dark" />
+            android:src="@drawable/abs__ic_ab_back_holo_dark"
+            android:background="#00000000" />
 
         <FrameLayout
             android:id="@+id/guider_switch"
@@ -117,7 +117,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:progressDrawable="@drawable/progress"
-                android:thumb="@drawable/thumb_pause" />
+                
+                android:thumb="@drawable/thumb_play_style" />
 
             <LinearLayout
                 android:id="@+id/scene_music_time"
@@ -157,7 +158,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_style_forlist"
             android:drawableLeft="@drawable/scene_voice_text"
             android:text="文字"
             android:textColor="#000000"
@@ -168,7 +169,9 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/button_style"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/button_style_forlist"
             android:drawableLeft="@drawable/scene_map_turn"
             android:text="到这里"
             android:textColor="#000000"
@@ -179,16 +182,18 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_style_forlist"
             android:drawableLeft="@drawable/scene_voice_love"
             android:text="喜欢"
             android:textColor="#000000"
             android:textSize="16sp" />
+        
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_marginTop="1dp" >
 
         <LinearLayout
             android:layout_width="fill_parent"

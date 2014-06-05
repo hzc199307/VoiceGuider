@@ -1,5 +1,7 @@
 package com.ne.voiceguider.util;
 
+import javax.security.auth.Destroyable;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -91,6 +93,11 @@ public class LocationUtil {
 	}
 	public void stop() {
 		mLocClient.stop();
+	}
+	public void destroy() {
+		// TODO Auto-generated method stub
+		mLocClient.stop();
+		sensorManager.unregisterListener(mySensorEventListener);
 	}
 	
 	public void updateLocationData(BDLocation mBDLocation)

@@ -163,6 +163,7 @@ public class HikingFragment extends Fragment {
 	@Override  
 	public void onDestroy(){  
 		mLocationUtil.stop();
+		mLocationUtil=null;
 		super.onDestroy();   
 	}  
 

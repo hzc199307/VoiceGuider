@@ -4,7 +4,7 @@
     android:id="@+id/smallscene_layout"
     android:layout_width="fill_parent"
     android:layout_height="60dp"
-    android:background="#ffffff" >
+    android:background="@drawable/button_style_forlist" >
 
     <LinearLayout
         android:layout_width="wrap_content"

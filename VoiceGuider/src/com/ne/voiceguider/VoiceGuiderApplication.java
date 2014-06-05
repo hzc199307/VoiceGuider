@@ -34,7 +34,7 @@ public class VoiceGuiderApplication extends Application {
 		Log.v(TAG, "onCreate");
 		
 		mInstance = this;
-		initEngineManager(this);
+//		initEngineManager(this);
 		Log.v(TAG, "onCreate1");
 //		initVoicePlayerService();//service绑定到MainActivity去  此处会报错 TODO
 		Log.v(TAG, "onCreate2");

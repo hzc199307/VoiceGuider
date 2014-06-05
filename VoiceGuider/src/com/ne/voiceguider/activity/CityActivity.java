@@ -90,7 +90,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	private String cityName = null,cityPinyin=null;
 	private int cityID,cityDownloadId = -1;
 	private MKOLUpdateElement cityUpdateInfo = null;
-	private Button city_scenelist_button,city_scenemap_button,city_head_back;
+	private Button city_scenelist_button,city_scenemap_button;
+	private ImageButton city_head_back;
 	private TextView city_head_text;
 	private FrameLayout city_scene_mapdownload_button;
 	private RoundProgressBar city_scene_alldownload_button_roundProgressBar;
@@ -434,6 +435,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 				{
 					leftToRight();
 					isMapNow = false;
+					city_scenelist_button.setBackgroundResource(R.drawable.button_down);
+					city_scenemap_button.setBackgroundResource(R.drawable.button_style);
 				}
 			}
 		});
@@ -457,6 +460,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 						}
 					};
 					thread.start();
+					city_scenemap_button.setBackgroundResource(R.drawable.button_down);
+					city_scenelist_button.setBackgroundResource(R.drawable.button_style);
 					isMapNow = true;
 				}
 				else//如果正处于地图位置  返回景点位置
@@ -534,8 +539,8 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	 */
 	public void city_head()
 	{
-		city_head_back = (Button)findViewById(R.id.city_head_back);
-		city_head_back.setOnClickListener(new Button.OnClickListener() {
+		city_head_back = (ImageButton)findViewById(R.id.city_head_back);
+		city_head_back.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -599,7 +604,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onDestroy(){
 		Log.v("CityActivity", "onDestroy");
-		mLocClient.stop();
+		
 		mOfflineMapUtil.pause(cityDownloadId);//只有destroy的时候才暂停下载
 		mOfflineMapUtil.destroy();//destroy的顺序一定不能改
 		if(mMapView!=null)
@@ -612,6 +617,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	@Override
 	protected void onPause(){
 		Log.v("CityActivity", "onPause");
+		mLocClient.stop();
 		sensorManager.unregisterListener(mySensorEventListener);
 		mMapView.onPause();
 		super.onPause();
