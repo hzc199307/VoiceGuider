@@ -66,7 +66,7 @@ public class SmallSceneAdapter extends BaseAdapter{
 		if (convertView == null) {// 这样做可以使view循环利用，而不会有多少个item就产生多少个view
 			holder = new Holder();
 			convertView = inflater.inflate(R.layout.item_smallscene, null);// 引用布局文件
-			holder.smallscene_textview = (TextView) convertView.findViewById(R.id.smallscene_textview);	
+			holder.smallscene_name_textview = (TextView) convertView.findViewById(R.id.smallscene_name_textview);	
 			convertView.setTag(holder);// 如果是新产生的view，则设置tag
 		} 
 		else
@@ -76,16 +76,16 @@ public class SmallSceneAdapter extends BaseAdapter{
 		SmallScene mySmallScene = listData.get(position);
 		if (mySmallScene != null) {
 			// 对相应的控件赋值
-			holder.smallscene_textview.setText(mySmallScene.getSmallSceneName());
+			holder.smallscene_name_textview.setText(mySmallScene.getSmallSceneName());
 		}
 		else {
-			holder.smallscene_textview.setText("error");
+			holder.smallscene_name_textview.setText("error");
 		}
 		return convertView;
 	}
 
 	final class Holder {
-		public TextView smallscene_textview;
+		public TextView smallscene_name_textview;
 	}
 
 	/**
