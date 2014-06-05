@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@android:id/background" 
-      android:drawable="@drawable/play_ctrl_barbg" />
- 
-  <item android:id="@android:id/progress">
-      <clip android:drawable="@drawable/play_ctrl_currbar" />
-</item>
-</layer-list> 
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/play_ctrl_barbg">
+        <shape>
+            <corners android:radius="50px" />
+
+            <gradient android:angle="270" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip android:drawable="@drawable/play_ctrl_currbar" />
+
+        <shape>
+            <corners android:radius="50px" />
+
+            <gradient android:angle="270" />
+        </shape>
+    </item>
+
+</layer-list>

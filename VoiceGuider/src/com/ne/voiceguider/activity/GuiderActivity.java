@@ -297,6 +297,7 @@ public class GuiderActivity extends ActionBarActivity {
 				playIndex = mmMediaBinder.getPosition();
 				scene_music_place_name.setText(mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallSceneName());
 				seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
+				
 			}
 			else
 				mmMediaBinder.stop();
@@ -307,6 +308,7 @@ public class GuiderActivity extends ActionBarActivity {
 			mmMediaBinder.stop();
 			if(mSmallSceneAdapter.getCount()>0)
 			{
+				playIndex = 0;
 				scene_music_place_name.setText(mSmallSceneAdapter.getItem(0).getSmallSceneName());
 				Log.v(TAG,mSmallSceneAdapter.getItem(0).getSmallScenePinyin());
 				mmMediaBinder.setDataSource(0,cityPinyin,bigScenePinyin,mSmallSceneAdapter.getItem(0).getSmallScenePinyin());
@@ -315,8 +317,8 @@ public class GuiderActivity extends ActionBarActivity {
 
 		//		mp = MediaPlayer.create(GuiderActivity.this, R.raw.test_music); // set the music rc
 
-		seekBar.setProgress(0);
 		seekBar.setMax(mmMediaBinder.getDuration());
+		seekBar.setProgress(0);	
 		updateMusicProgressText();
 		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			int lastProgress;
@@ -326,12 +328,15 @@ public class GuiderActivity extends ActionBarActivity {
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 				if(fromTouch == true){
 					// only allow changes by 1 up or down
-					if(Math.abs(progress-lastProgress)*1.0 / seekBar.getMax() > 0.1){
+					if((Math.abs(progress-lastProgress)*1.0 / seekBar.getMax()) > 0.1){
 						seekBar.setProgress(lastProgress);
+						Log.v(TAG, "onProgressChanged >0.1");
+						isThumbClick= false;
 					} else {
 						//seekBar.setThumb(getResources().getDrawable(R.drawable.play_ctrl_drag));
 						lastProgress = progress;
 						isThumbClick= true;
+						text_time_already.setText(""+ MusicPlayerUtil.milliSecondsToTimer(progress));
 					}
 				} 
 			}
@@ -339,6 +344,7 @@ public class GuiderActivity extends ActionBarActivity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 
+				Log.v(TAG, "onStopTrackingTouch");
 				if(! isThumbClick){
 					// update timer progress again
 					updateMusicProgressText();
@@ -347,32 +353,37 @@ public class GuiderActivity extends ActionBarActivity {
 
 				mmMediaBinder.seekTo(lastProgress);
 				// update timer progress again
+//				updateMusicProgressText();
 				updateMusicProgressText();
-				if(Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax() > 0.1){
+				if((Math.abs(lastProgress-originalProgress)*1.0 / seekBar.getMax()) > 0.1){
 					return;
 				}
-
 				if(isPlaying){
+					isPlaying= false;
 					mmMediaBinder.pause();
-					mHandler.removeCallbacks(mUpdateTimeTask);
+					stopUpdateMusicProgressText();//mHandler.removeCallbacks(mUpdateTimeTask);
 					//					mp.pause();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_play_style));
-					isPlaying= false;
+					
 				}
 				else{
+					isPlaying= true;
 					mmMediaBinder.play();
 					//					mp.start();
 					seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
-					isPlaying= true;
+					
 				}
 			}
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				mHandler.removeCallbacks(mUpdateTimeTask);
+				stopUpdateMusicProgressText();//mHandler.removeCallbacks(mUpdateTimeTask);
 				originalProgress= lastProgress = seekBar.getProgress();
+				isThumbClick= true;
 			}
 		});
+		
+		Log.v(TAG, "seekBar.getProgress() "+seekBar.getProgress());
 
 	}
 
@@ -606,9 +617,13 @@ public class GuiderActivity extends ActionBarActivity {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			finish();
+			finish();break;
+//		case KeyEvent.KEYCODE_VOLUME_UP:
+//			myScrollBy(-200);break;
+//		case KeyEvent.KEYCODE_VOLUME_DOWN:
+//			break;
 		}
-		return true;
+		return false;
 	}
 
 	public class MyWebViewClient extends WebViewClient {
@@ -621,12 +636,29 @@ public class GuiderActivity extends ActionBarActivity {
 		}
 	}
 
+	private boolean updating = false;
 	public void updateMusicProgressText() {
 		if( mHandler == null ){
 			mHandler= new Handler();
 		}
-		mHandler.postDelayed(mUpdateTimeTask, 100);
-	}   
+		if(updating == false)
+		{
+			mHandler.removeCallbacks(mUpdateTimeTask);
+			mHandler.postDelayed(mUpdateTimeTask, 100);
+			updating = true;
+		}
+	} 
+	public void stopUpdateMusicProgressText() {
+		if( mHandler == null ){
+			mHandler= new Handler();
+		}
+		if(updating == true)
+		{
+			mHandler.removeCallbacks(mUpdateTimeTask);
+			updating = false;
+		}
+		
+	}
 
 	/**
 	 * Background Runnable thread
@@ -654,6 +686,7 @@ public class GuiderActivity extends ActionBarActivity {
 		mLocationUtil = null;
 		super.onDestroy();
 	};
+	
 
 }
 

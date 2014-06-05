@@ -90,7 +90,7 @@ public class VoicePlayerService extends Service {
 		}
 		
 		public void pause() {
-			if(mediaPlayer != null&&mediaPlayer.isPlaying()) {
+			if(mediaPlayer != null) {	
 				mediaPlayer.pause();	
 			}
 			Log.v(TAG, "MediaBinder.pause()"+!mediaPlayer.isPlaying());
@@ -98,7 +98,7 @@ public class VoicePlayerService extends Service {
 		
 		public void stop() {
 			if(mediaPlayer != null&&mediaPlayer.isPlaying()) {
-				pause();
+				mediaPlayer.pause();
 				mediaPlayer.stop();
 			}
 			Log.v(TAG, "MediaBinder.stop()");

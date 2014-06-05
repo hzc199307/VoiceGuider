@@ -711,7 +711,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
-			finish();
+			finish();break;
 		}
 		return true;
 	}
