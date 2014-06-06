@@ -49,7 +49,7 @@ public class VoicePlayerService extends Service {
 	public class MediaBinder extends Binder {
 		
 		private String bigScenePinyin;
-		private int position;
+		private int position = 0;
 		public MediaBinder()
 		{
 			mediaPlayer = new MediaPlayer();

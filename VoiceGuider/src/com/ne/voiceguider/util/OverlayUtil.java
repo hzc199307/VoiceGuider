@@ -27,6 +27,7 @@ import com.baidu.mapapi.map.TextItem;
 import com.baidu.mapapi.map.TextOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
+import com.ne.voiceguider.VoiceGuiderApplication;
 import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.activity.GuiderActivity;
 import com.ne.voiceguider.bean.BigScene;
@@ -56,6 +57,7 @@ public class OverlayUtil<Class> {
 	private TextView popupText = null;
 	private View viewCache = null;
 	private View popupInfo = null;
+	private TextView textheight;
 	private View popupLeft = null;
 	private View popupRight = null;
 	private MapView.LayoutParams layoutParam = null;
@@ -79,10 +81,10 @@ public class OverlayUtil<Class> {
 		return mOverlayUtil;
 	}
 
-	public static OverlayUtil newInstanceForSmallScenes(MapView mapView,Context context)
+	public static OverlayUtil newInstanceForSmallScenes(MapView mapView,Context context,PopupClickListener listener)
 	{
 		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
-		mOverlayUtil.initForSmallScenes();
+		mOverlayUtil.initForSmallScenes(listener);
 		return mOverlayUtil;
 	}
 
@@ -116,14 +118,18 @@ public class OverlayUtil<Class> {
 		//PopupOverlay 只能在地图上面标记一处
 		mButtonPop = new PopupOverlay(mMapView, new MyPopupClickForBigScenesListener()); 
 
+		Log.v(TAG, "pop 与 标记 之间的距离，即标记的像素高度: "+mContext.getResources().getDrawable(R.drawable.bigscene_yuexiugongyuan).getMinimumHeight());
+		int height = mContext.getResources().getDrawable(R.drawable.bigscene_yuexiugongyuan).getMinimumHeight();
 		viewCache = LayoutInflater.from(mContext).inflate(R.layout.city_scene_overlay_layout, null);
 		popupInfo = (View) viewCache.findViewById(R.id.popinfo);
+		textheight = (TextView) viewCache.findViewById(R.id.textheight);
+		textheight.setHeight(height);
 		popupLeft = (View) viewCache.findViewById(R.id.popleft);
 		popupRight = (View) viewCache.findViewById(R.id.popright);
 		popupText =(TextView) viewCache.findViewById(R.id.textcache);
 	}
 
-	public void initForSmallScenes()
+	public void initForSmallScenes(PopupClickListener listener)
 	{
 		/**
 		 * 创建自定义overlay
@@ -142,10 +148,14 @@ public class OverlayUtil<Class> {
 		mMapView.refresh();
 		mMapController =mMapView.getController();
 		//PopupOverlay 只能在地图上面标记一处
-		mButtonPop = new PopupOverlay(mMapView, new MyPopupClickForSmallScenesListener()); 
+		mButtonPop = new PopupOverlay(mMapView, listener); 
 
+		Log.v(TAG, "pop 与 标记 之间的距离，即标记的像素高度: "+mContext.getResources().getDrawable(R.drawable.location_share_icon_green).getMinimumHeight());
+		int height = mContext.getResources().getDrawable(R.drawable.location_share_icon_green).getMinimumHeight();
 		viewCache = LayoutInflater.from(mContext).inflate(R.layout.city_scene_overlay_layout, null);
 		popupInfo = (View) viewCache.findViewById(R.id.popinfo);
+		textheight = (TextView) viewCache.findViewById(R.id.textheight);
+		textheight.setHeight(height);
 		popupLeft = (View) viewCache.findViewById(R.id.popleft);
 		popupRight = (View) viewCache.findViewById(R.id.popright);
 		popupText =(TextView) viewCache.findViewById(R.id.textcache);
@@ -170,6 +180,8 @@ public class OverlayUtil<Class> {
 				Log.v(mBigScene.getLatitude()+"",mBigScene.getLongitude()+"");
 				gp= new GeoPoint ((int)(mBigScene.getLatitude()*1E6),(int)(mBigScene.getLongitude()*1E6));
 				item = new OverlayItem(gp,mBigScene.getBigSceneName(),"");
+				int id = mContext.getResources().getIdentifier("bigscene_"+mBigScene.getBigScenePinyin() ,"drawable","com.ne.voiceguider");
+				item.setMarker(mContext.getResources().getDrawable(id));
 
 			}
 			else
@@ -178,9 +190,11 @@ public class OverlayUtil<Class> {
 				Log.v(mSmallScene.getLatitude()+"",mSmallScene.getLongtitude()+"");
 				gp= new GeoPoint ((int)(mSmallScene.getLatitude()*1E6),(int)(mSmallScene.getLongtitude()*1E6));
 				item = new OverlayItem(gp,mSmallScene.getSmallSceneName(),"");
+				
+				item.setMarker(mContext.getResources().getDrawable(R.drawable.location_share_icon_green));
 			}
 			//item.setMarker(mContext.getResources().getDrawable(R.drawable.city_scene_overlay_icon));
-			item.setMarker(mContext.getResources().getDrawable(R.drawable.location_share_icon_green));
+//			item.setMarker(mContext.getResources().getDrawable(R.drawable.location_share_icon_green));
 			addItem(item);
 		}
 
@@ -241,6 +255,7 @@ public class OverlayUtil<Class> {
 			textColor1.blue = 80;  
 			textColor1.green = 80;  
 
+			this.align = ALIGN_TOP;
 			this.fontColor = textColor;
 			this.bgColor = textColor1;
 			this.fontSize = 30;
@@ -261,19 +276,9 @@ public class OverlayUtil<Class> {
 			}
 		}
 	}
-	public class MyPopupClickForSmallScenesListener implements PopupClickListener
-	{
-		@Override
-		public void onClickedPopup(int index) {
-			Log.v(TAG, "onClickedPopup startActivity");
-			// TODO Auto-generated method stub
-			if ( index == 0){
-			}
-			else if(index == 1){
-				//startActivity();
-			}
-		}
-	}
+	
+	
+
 	public class MyOverlayForBigScenes extends ItemizedOverlay{
 
 		public MyOverlayForBigScenes(Drawable defaultMarker, MapView mapView) {
@@ -292,6 +297,7 @@ public class OverlayUtil<Class> {
 				Log.v(TAG, mBigScene.getBigSceneName());
 				nowBundle.putInt("bigSceneID", mBigScene.getBigSceneID());
 				nowBundle.putString("bigScenePinyin", mBigScene.getBigScenePinyin());
+				position = index;
 				nowBundle.putString("cityPinyin", cityPinyin);
 				isPopShowed=true;
 				Bitmap[] bitMaps={
@@ -299,7 +305,7 @@ public class OverlayUtil<Class> {
 						BMapUtil.getBitmapFromView(popupInfo), 		
 						BMapUtil.getBitmapFromView(popupRight)		
 				};
-				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),32);
+				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),0);
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
 
 
@@ -324,6 +330,8 @@ public class OverlayUtil<Class> {
 
 	}
 	
+	public int position;
+	public SmallScene selectedSmallScene;
 	public class MyOverlayForSmallScenes extends ItemizedOverlay{
 
 		public MyOverlayForSmallScenes(Drawable defaultMarker, MapView mapView) {
@@ -337,17 +345,16 @@ public class OverlayUtil<Class> {
 			popupText.setText(getItem(index).getTitle());
 			if(isPopShowed==false)//显示有按钮的pop
 			{
-				SmallScene mSmallScene = (SmallScene)(listObject.get(index));
-				nowBundle.putString("smallSceneName", mSmallScene.getSmallSceneName());            //装入数据 
-				Log.v(TAG, mSmallScene.getSmallSceneName());
-				nowBundle.putInt("bigSceneID", mSmallScene.getSmallSceneID());
+				selectedSmallScene = (SmallScene)(listObject.get(index));
+				position = index;
+				Log.v(TAG, selectedSmallScene.getSmallSceneName());
 				isPopShowed=true;
 				Bitmap[] bitMaps={
 						BMapUtil.getBitmapFromView(popupLeft), 		
 						BMapUtil.getBitmapFromView(popupInfo), 		
 						BMapUtil.getBitmapFromView(popupRight)		
 				};
-				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),32);
+				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),0);
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
 			}
 			else

@@ -6,6 +6,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.map.MapController;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.PopupClickListener;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.VoiceGuiderApplication;
@@ -20,6 +21,7 @@ import com.ne.voiceguider.util.LocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
+import com.ne.voiceguider.util.SystemUtil;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -125,6 +127,8 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_head();
 		guider_music();
 		webview();
+		
+		mSystemUtil = new SystemUtil(this);
 	}
 
 	private MapView mMapView = null;
@@ -262,10 +266,51 @@ public class GuiderActivity extends ActionBarActivity {
 	public void initOverlay()
 	{
 
-		mOverlayUtil = OverlayUtil.newInstanceForSmallScenes(mMapView, this);
+		mOverlayUtil = OverlayUtil.newInstanceForSmallScenes(mMapView, this,new MyPopupClickForSmallScenesListener());
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getSmallScenes(bigSceneID));
 		mOverlayUtil.showAll();
+		Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
+			@Override
+			public void run(){
+				try {
+					Thread.currentThread().sleep(400);
+					 mOverlayUtil.showSpan();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
+//		mOverlayUtil.showSpan();
+	}
+	public class MyPopupClickForSmallScenesListener implements PopupClickListener
+	{
+		@Override
+		public void onClickedPopup(int index) {
+			Log.v(TAG, "onClickedPopup play voice");
+			// TODO Auto-generated method stub
+			if(app.mMediaBinder.isPlaying()&&app.mMediaBinder.getPosition()==mOverlayUtil.position)
+			{
+				//点到 正在播放的item自己
+			}
+			else
+			{
+				//正在播放别的
+				Log.v(TAG, "下面播放 ： "+mOverlayUtil.selectedSmallScene.getSmallSceneName());
+				scene_music_place_name.setText(mOverlayUtil.selectedSmallScene.getSmallSceneName());
+				app.mMediaBinder.stop();
+				seekBar.setProgress(0);
+				app.mMediaBinder.setDataSource(mOverlayUtil.position,cityPinyin,bigScenePinyin,mOverlayUtil.selectedSmallScene.getSmallScenePinyin());
+				seekBar.setProgress(0);
+				Log.v(TAG, "Duration: "+app.mMediaBinder.getDuration());
+				seekBar.setMax(mmMediaBinder.getDuration());
+				updateMusicProgressText();
+				app.mMediaBinder.play();
+				seekBar.setThumb(getResources().getDrawable(R.drawable.thumb_pause_style));
+				isPlaying= true;
+			}
+		}
 	}
 	private VoicePlayerService.MediaBinder mmMediaBinder;
 	private TextView scene_music_place_name;
@@ -411,11 +456,12 @@ public class GuiderActivity extends ActionBarActivity {
 				{
 					if(isMapNow == true)
 					{
-						leftToRight();
+						RightToLeft();
+						
 						isMapNow = false;
 					}
-					guider_cursor1.setVisibility(View.VISIBLE);
-					guider_cursor2.setVisibility(View.INVISIBLE);
+					guider_cursor1.setVisibility(View.INVISIBLE);
+					guider_cursor2.setVisibility(View.VISIBLE);
 					index=0;break;
 				}
 
@@ -423,7 +469,7 @@ public class GuiderActivity extends ActionBarActivity {
 				{
 					if(isMapNow == false)
 					{
-						RightToLeft();
+						leftToRight();
 						Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
 							@Override
 							public void run(){
@@ -443,8 +489,8 @@ public class GuiderActivity extends ActionBarActivity {
 						mOverlayUtil.showSpan();
 						Toast.makeText(GuiderActivity.this, "返回景点位置……", Toast.LENGTH_SHORT).show();
 					}
-					guider_cursor2.setVisibility(View.VISIBLE);
-					guider_cursor1.setVisibility(View.INVISIBLE);
+					guider_cursor2.setVisibility(View.INVISIBLE);
+					guider_cursor1.setVisibility(View.VISIBLE);
 					index=1;break;
 				}
 				default:
@@ -469,13 +515,15 @@ public class GuiderActivity extends ActionBarActivity {
 
 	//地图和列表的flipper
 	private SmallSceneAdapter mSmallSceneAdapter;
+	
 	void initFlipper() {
-		isMapNow = false;
+		isMapNow = true;//TODO 进来先看地图
 		mViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
-		fragment_guider_list = LayoutInflater.from(this).inflate(R.layout.fragment_guider_list, null);
-		mViewFlipper.addView(fragment_guider_list);
 		fragment_guider_map = LayoutInflater.from(this).inflate(R.layout.fragment_guider_map, null);
 		mViewFlipper.addView(fragment_guider_map);
+		
+		fragment_guider_list = LayoutInflater.from(this).inflate(R.layout.fragment_guider_list, null);
+		mViewFlipper.addView(fragment_guider_list);
 		smallscene_listview = (ListView)fragment_guider_list.findViewById(R.id.smallscene_listview);
 		mSmallSceneAdapter = new SmallSceneAdapter(this, bigSceneID);
 		smallscene_listview.setAdapter(mSmallSceneAdapter);
@@ -543,6 +591,7 @@ public class GuiderActivity extends ActionBarActivity {
 				// TODO Auto-generated method stub
 				if(haveWebView==false)
 				{
+					changeHtml();//TODO
 					guider_text_webview.setVisibility(View.VISIBLE);
 					haveWebView = true;
 				}
@@ -603,25 +652,35 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_text_webview.setInitialScale(70);
 		guider_text_webview.setHorizontalScrollbarOverlay(true);
 		guider_text_webview.setWebViewClient(new WebViewClient());
-		guider_text_webview.loadUrl("file:///android_asset/HTML/html/guangzhou/yuexiugongyuan/guangzhoubowuguan.html");
+		guider_text_webview.loadUrl("file:///android_asset/HTML/html/"+cityPinyin+"/"+bigScenePinyin+"/"+mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallScenePinyin()+".html");
+//		guider_text_webview.loadUrl("file:///android_asset/HTML/html/guangzhou/yuexiugongyuan/guangzhoubowuguan.html");
 		guider_text_webview.getSettings().setUseWideViewPort(true);
 		guider_text_webview.getSettings().setLoadWithOverviewMode(true);
 		guider_text_webview.getSettings().setBuiltInZoomControls(false);
+	}
+	/*
+	 * 改变当前的文本
+	 */
+	public void changeHtml()
+	{
+		guider_text_webview.loadUrl("file:///android_asset/HTML/html/"+cityPinyin+"/"+bigScenePinyin+"/"+mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallScenePinyin()+".html");
 	}
 
 	/**
 	 * 监控返回键
 	 * @param position
 	 */
+	
+	private SystemUtil mSystemUtil  ;
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
 			finish();break;
-//		case KeyEvent.KEYCODE_VOLUME_UP:
-//			myScrollBy(-200);break;
-//		case KeyEvent.KEYCODE_VOLUME_DOWN:
-//			break;
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mSystemUtil.addMusicVolume(10);break;
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mSystemUtil.subtractMusicVolume(10);break;
 		}
 		return false;
 	}
@@ -668,6 +727,7 @@ public class GuiderActivity extends ActionBarActivity {
 			int totalDuration = mmMediaBinder.getDuration();
 			int currentDuration = mmMediaBinder.getCurrentPosition();
 
+//			Log.v(TAG, "mUpdateTimeTask getCurrentPosition() "+currentDuration);
 			// Updating progress bar
 			seekBar.setProgress(currentDuration);
 
@@ -684,6 +744,7 @@ public class GuiderActivity extends ActionBarActivity {
 	public void onDestroy() {
 		mLocationUtil.stop();
 		mLocationUtil = null;
+		stopUpdateMusicProgressText();
 		super.onDestroy();
 	};
 	

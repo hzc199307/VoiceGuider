@@ -33,17 +33,6 @@
                 android:orientation="horizontal" >
 
                 <Button
-                    android:id="@+id/guider_scenelist_button"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="12"
-                    android:background="#00000000"
-                    android:padding="10dip"
-                    android:text="列表"
-                    android:textColor="#ffffff"
-                    android:textSize="15sp" />
-
-                <Button
                     android:id="@+id/guider_scenemap_button"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -53,6 +42,17 @@
                     android:text="地图"
                     android:textColor="#ffffff"
                     android:textSize="15sp" />
+                <Button
+                    android:id="@+id/guider_scenelist_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="12"
+                    android:background="#00000000"
+                    android:padding="10dip"
+                    android:text="列表"
+                    android:textColor="#ffffff"
+                    android:textSize="15sp" />
+                
             </LinearLayout>
 
             <LinearLayout

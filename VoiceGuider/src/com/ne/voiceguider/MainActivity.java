@@ -2,6 +2,7 @@ package com.ne.voiceguider;
 
 import com.ne.voiceguider.fragment.HikingFragment;
 import com.ne.voiceguider.fragment.MineFragment;
+import com.ne.voiceguider.fragment.MoreFragment;
 import com.ne.voiceguider.service.VoicePlayerService;
 
 import android.support.v7.app.ActionBarActivity;
@@ -147,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
 			{
 			case 0:return new HikingFragment();
 			case 1:return new MineFragment();//TODO
-			case 2:return new MineFragment();//TODO
+			case 2:return new MoreFragment();//TODO
 			default:return null;
 			}
 		}  

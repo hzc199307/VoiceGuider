@@ -4,7 +4,9 @@
     <item
         android:id="@android:id/background"
         android:drawable="@drawable/play_ctrl_barbg">
+        
         <shape>
+            <size android:height="100px"/>
             <corners android:radius="50px" />
 
             <gradient android:angle="270" />
@@ -12,8 +14,8 @@
     </item>
     <item android:id="@android:id/progress">
         <clip android:drawable="@drawable/play_ctrl_currbar" />
-
         <shape>
+            <size android:height="100px"/>
             <corners android:radius="50px" />
 
             <gradient android:angle="270" />
