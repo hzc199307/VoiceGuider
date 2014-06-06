@@ -114,6 +114,11 @@ public class VoicePlayerService extends Service {
 			return false;
 		}
 		
+		public void setVolume(double volume)
+		{
+			mediaPlayer.setVolume((float)volume, (float)volume);
+		}
+		
 //		public boolean isPlaying(String smallScenePinyin) {
 //			if(mediaPlayer != null) {
 //				if(mediaPlayer.isPlaying())

@@ -54,6 +54,11 @@ public class SystemUtil {
 		// mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);//Í¨»°
 	}
 	
+	public double getMusicVolume()
+	{
+		return getAudioVolume(AudioManager.STREAM_MUSIC)*1.0/getAudioMaxVolume(AudioManager.STREAM_MUSIC);
+	}
+	
 	public void addMusicVolume(int index)
 	{
 		Log.v("", getAudioMaxVolume(AudioManager.STREAM_MUSIC)+"addMusicVolume");

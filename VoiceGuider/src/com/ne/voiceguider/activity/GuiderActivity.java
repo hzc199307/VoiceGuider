@@ -677,10 +677,22 @@ public class GuiderActivity extends ActionBarActivity {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_BACK:
 			finish();break;
-		case KeyEvent.KEYCODE_VOLUME_UP:
-			mSystemUtil.addMusicVolume(10);break;
+		case KeyEvent.KEYCODE_VOLUME_UP://TODO 已经可以修改  只是弹出音量条不对
+		{
+			if(mSystemUtil.getMusicVolume()<0.9)
+				mmMediaBinder.setVolume(mSystemUtil.getMusicVolume()+0.1);
+			else
+				mmMediaBinder.setVolume(1.0);
+			break;//mSystemUtil.addMusicVolume(10);
+		}
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
-			mSystemUtil.subtractMusicVolume(10);break;
+		{
+			if(mSystemUtil.getMusicVolume()>0.1)
+				mmMediaBinder.setVolume(mSystemUtil.getMusicVolume()-0.1);
+			else
+				mmMediaBinder.setVolume(0.0);
+			//mSystemUtil.subtractMusicVolume(10);break;
+		}
 		}
 		return false;
 	}
