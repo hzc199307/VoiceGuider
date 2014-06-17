@@ -12,5 +12,6 @@
     <string name="title_activity_guider">GuiderActivity</string>
     <string name="title_activity_city2">City2Activity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_google_map">GoogleMapActivity</string>
 
 </resources>
