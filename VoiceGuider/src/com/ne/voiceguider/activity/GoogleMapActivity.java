@@ -1,5 +1,6 @@
 package com.ne.voiceguider.activity;
 
+import com.google.android.gms.maps.MapView;
 import com.ne.voiceguider.R;
 import com.ne.voiceguider.R.id;
 import com.ne.voiceguider.R.layout;
@@ -12,12 +13,12 @@ import android.view.MenuItem;
 
 public class GoogleMapActivity extends ActionBarActivity {
 
+	private MapView mapViewGoogle;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_google_map);
-//		MapView mapView = (MapView) findViewById(R.id.mapview);
-//	    mapView.setBuiltInZoomControls(true);
+		mapViewGoogle = (MapView) findViewById(R.id.mapViewGoogle);
 //	    GeoPoint point = new GeoPoint((int)(23134837),(int)(113271842));
 //	    mapView.getController().setCenter(point);
 	}
