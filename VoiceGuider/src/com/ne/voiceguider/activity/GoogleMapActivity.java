@@ -1,24 +1,25 @@
 package com.ne.voiceguider.activity;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
 import com.ne.voiceguider.R;
+import com.ne.voiceguider.R.id;
+import com.ne.voiceguider.R.layout;
+import com.ne.voiceguider.R.menu;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class GoogleMapActivity extends MapActivity {
+public class GoogleMapActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_google_map);
-		MapView mapView = (MapView) findViewById(R.id.mapview);
-	    mapView.setBuiltInZoomControls(true);
-	    GeoPoint point = new GeoPoint((int)(23134837),(int)(113271842));
-	    mapView.getController().setCenter(point);
+//		MapView mapView = (MapView) findViewById(R.id.mapview);
+//	    mapView.setBuiltInZoomControls(true);
+//	    GeoPoint point = new GeoPoint((int)(23134837),(int)(113271842));
+//	    mapView.getController().setCenter(point);
 	}
 
 	@Override
@@ -39,12 +40,6 @@ public class GoogleMapActivity extends MapActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

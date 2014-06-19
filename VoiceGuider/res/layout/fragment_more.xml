@@ -7,7 +7,7 @@
     <Button 
         android:id="@+id/googleMapButton"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:text="GoogleMap"/>
+        android:layout_height="wrap_content"
+        android:text="GoogleMap入口"/>
 
 </LinearLayout>
