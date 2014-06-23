@@ -96,6 +96,7 @@ public class GuiderActivity extends ActionBarActivity {
 	private Boolean isMapNow;
 
 
+	private CitySceneDao mCitySceneDao ;
 
 	private Intent serviceIntent;
 	Handler mHandler= null;
@@ -269,7 +270,7 @@ public class GuiderActivity extends ActionBarActivity {
 	{
 
 		mOverlayUtil = OverlayUtil.newInstanceForSmallScenes(mMapView, this,new MyPopupClickForSmallScenesListener());
-		CitySceneDao mCitySceneDao = new CitySceneDao(this);
+		mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getSmallScenes(bigSceneID));
 		mOverlayUtil.showAll();
 		Thread thread = new Thread(){//设置晚0.1s显示 解决地图界面显示错误
@@ -771,7 +772,8 @@ public class GuiderActivity extends ActionBarActivity {
 				
 				if(isFirst)
 				{
-					;
+					mRouteOverlayUtil.setListData(mCitySceneDao.getSmallScenes(bigSceneID));
+					isFirst = false;
 				}
 				if(isThere==false)
 				{

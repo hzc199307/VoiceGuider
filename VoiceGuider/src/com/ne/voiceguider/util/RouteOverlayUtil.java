@@ -20,6 +20,7 @@ public class RouteOverlayUtil {
 	private MapView mMapView;
 	public RouteOverlayUtil(Context mContext,MapView mMapView) {
 		routeOverlay = new RouteOverlay((Activity) mContext, mMapView);	
+		this.mMapView = mMapView;
 		mMapView.refresh();
 	}
 	
