@@ -1,8 +1,11 @@
 package com.ne.voiceguider;
 
+import java.io.IOException;
+
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
+import com.ne.voiceguider.DBHelper.DBHelper;
 import com.ne.voiceguider.service.VoicePlayerService;
 
 import android.app.Application;
@@ -10,8 +13,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -38,7 +43,27 @@ public class VoiceGuiderApplication extends Application {
 		Log.v(TAG, "onCreate1");
 //		initVoicePlayerService();//service绑定到MainActivity去  此处会报错 TODO
 		Log.v(TAG, "onCreate2");
+		onDB();
 		super.onCreate();
+	}
+	/**
+	 * 对数据库的操作
+	 */
+	public void onDB() {
+		DBHelper mDBHelper = new DBHelper(this);
+		try {
+			if(mDBHelper.createDataBase())
+
+				;//mTextView.setText("hashahahhahahha");
+		} catch (IOException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		Cursor mCursor = mDBHelper
+				.query("select * from city where cityid=1 ",
+						null);
+		mCursor.moveToFirst();
+		//mTextView.setText(mCursor.getString(2));
 	}
 
 	public VoicePlayerService.MediaBinder mMediaBinder;

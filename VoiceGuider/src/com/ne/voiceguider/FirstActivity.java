@@ -68,7 +68,6 @@ public class FirstActivity extends Activity {
 			}
 		};
 		splashTread.start();
-		onDB();
 		ImageView mImageView = (ImageView)findViewById(R.id.helloImage);
 		animation.setDuration(3000);//设置动画持续时间 
 		animation.setFillAfter(true);//动画执行完后是否停留在执行完的状态  
@@ -88,27 +87,6 @@ public class FirstActivity extends Activity {
 		//
 		//			}
 		//		}, 1000);// 停留1秒
-	}
-
-	/**
-	 * 对数据库的操作
-	 */
-	public void onDB() {
-		DBHelper mDBHelper = new DBHelper(this);
-		TextView mTextView = (TextView) findViewById(R.id.hello);
-		try {
-			if(mDBHelper.createDataBase())
-
-				;//mTextView.setText("hashahahhahahha");
-		} catch (IOException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-		Cursor mCursor = mDBHelper
-				.query("select * from city where cityid=1 ",
-						null);
-		mCursor.moveToFirst();
-		//mTextView.setText(mCursor.getString(2));
 	}
 
 	@Override
