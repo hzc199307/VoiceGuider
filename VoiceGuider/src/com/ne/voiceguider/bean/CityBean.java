@@ -2,6 +2,8 @@ package com.ne.voiceguider.bean;
 
 import java.io.Serializable;
 
+import com.baidu.platform.comapi.basestruct.GeoPoint;
+
 public class CityBean implements Serializable{
 	
 	//private static final long serialVersionUID = 1L;
@@ -10,6 +12,10 @@ public class CityBean implements Serializable{
 	private String cityPinyin;
 	private double longtitude;
 	private double latitude;
+	public GeoPoint getGeoPoint()
+	{
+		return new GeoPoint((int)(latitude*1e6), (int)(longtitude*1e6));
+	}
 	public int getCityID() {
 		return cityID;
 	}

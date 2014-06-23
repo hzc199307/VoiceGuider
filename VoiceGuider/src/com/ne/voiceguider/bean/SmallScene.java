@@ -1,5 +1,7 @@
 package com.ne.voiceguider.bean;
 
+import com.baidu.platform.comapi.basestruct.GeoPoint;
+
 public class SmallScene {
 	private int smallSceneID;
 	private String smallSceneName;
@@ -10,6 +12,10 @@ public class SmallScene {
 	private int cityID;
 	public int mp3Time;
 	
+	public GeoPoint getGeoPoint()
+	{
+		return new GeoPoint((int)(latitude*1e6), (int)(longtitude*1e6));
+	}
 	public int getSmallSceneID() {
 		return smallSceneID;
 	}

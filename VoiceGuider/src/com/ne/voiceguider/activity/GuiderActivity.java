@@ -21,6 +21,7 @@ import com.ne.voiceguider.util.LocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
+import com.ne.voiceguider.util.RouteOverlayUtil;
 import com.ne.voiceguider.util.SystemUtil;
 
 import android.support.v7.app.ActionBarActivity;
@@ -127,6 +128,7 @@ public class GuiderActivity extends ActionBarActivity {
 		guider_head();
 		guider_music();
 		webview();
+		guider_route();
 		
 		mSystemUtil = new SystemUtil(this);
 	}
@@ -753,6 +755,39 @@ public class GuiderActivity extends ActionBarActivity {
 		}
 	};
 
+	private Button guider_route;
+	private RouteOverlayUtil mRouteOverlayUtil;
+	private void guider_route()
+	{
+		guider_route = (Button)findViewById(R.id.guider_route);
+		mRouteOverlayUtil = new RouteOverlayUtil(this, mMapView);
+		
+		guider_route.setOnClickListener(new OnClickListener() {
+			
+			private boolean isThere = false;
+			private boolean isFirst = true;
+			@Override
+			public void onClick(View arg0) {
+				
+				if(isFirst)
+				{
+					;
+				}
+				if(isThere==false)
+				{
+					mRouteOverlayUtil.showAll();
+					isThere = true;
+				}
+				else
+				{
+					mRouteOverlayUtil.removeAll();
+					isThere = false;
+				}
+				
+			}
+		});
+	}
+	
 	public void onDestroy() {
 		mLocationUtil.stop();
 		mLocationUtil = null;
