@@ -21,6 +21,7 @@ import com.ne.voiceguider.util.LocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtil;
 import com.ne.voiceguider.util.OfflineMapUtil;
 import com.ne.voiceguider.util.OverlayUtil;
+import com.ne.voiceguider.util.PolylineUtil;
 import com.ne.voiceguider.util.RouteOverlayUtil;
 import com.ne.voiceguider.util.SystemUtil;
 
@@ -757,11 +758,11 @@ public class GuiderActivity extends ActionBarActivity {
 	};
 
 	private Button guider_route;
-	private RouteOverlayUtil mRouteOverlayUtil;
+	private PolylineUtil mRouteOverlayUtil; // TODO 此处课可以考虑用 RouteOverlayUtil 还是 PolylineUtil
 	private void guider_route()
 	{
 		guider_route = (Button)findViewById(R.id.guider_route);
-		mRouteOverlayUtil = new RouteOverlayUtil(this, mMapView);
+		mRouteOverlayUtil = new PolylineUtil(this, mMapView);
 		
 		guider_route.setOnClickListener(new OnClickListener() {
 			

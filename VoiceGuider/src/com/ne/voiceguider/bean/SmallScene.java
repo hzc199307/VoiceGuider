@@ -11,7 +11,7 @@ public class SmallScene {
 	private int bigSceneID;
 	private int cityID;
 	public int mp3Time;
-	
+
 	public GeoPoint getGeoPoint()
 	{
 		return new GeoPoint((int)(latitude*1e6), (int)(longtitude*1e6));

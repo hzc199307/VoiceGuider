@@ -1,6 +1,5 @@
 package com.ne.voiceguider.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,6 +11,14 @@ import com.baidu.mapapi.search.MKRoute;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.ne.voiceguider.bean.SmallScene;
 
+/**
+ * baidu地图的路线工具
+ * @ClassName: RouteOverlayUtil 
+ * @Description: TODO 
+ * @author HeZhichao
+ * @date 2014年6月26日 上午9:31:13 
+ *
+ */
 public class RouteOverlayUtil {
 
 	private List<SmallScene> listSmallScenes;
