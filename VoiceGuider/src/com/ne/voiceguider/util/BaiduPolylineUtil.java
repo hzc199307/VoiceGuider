@@ -21,13 +21,13 @@ import com.ne.voiceguider.bean.SmallScene;
  * @date 2014年6月26日 上午11:30:00 
  *
  */
-public class PolylineUtil {
+public class BaiduPolylineUtil {
 
 	private List<SmallScene> listSmallScenes;
 	private GraphicsOverlay graphicsOverlay;
 	private MapView mMapView;
 	private GeoPoint[]  geoPoints = null;
-	public PolylineUtil(Context mContext,MapView mMapView) {
+	public BaiduPolylineUtil(Context mContext,MapView mMapView) {
 		this.mMapView = mMapView;
 		graphicsOverlay = new GraphicsOverlay(mMapView);
 		mMapView.refresh();

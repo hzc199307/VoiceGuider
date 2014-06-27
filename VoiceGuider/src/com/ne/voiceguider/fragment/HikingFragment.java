@@ -9,7 +9,7 @@ import com.ne.voiceguider.activity.CityActivity;
 import com.ne.voiceguider.adapter.BigSceneListAdapter;
 import com.ne.voiceguider.adapter.CityBeanListAdapter;
 import com.ne.voiceguider.bean.CityBean;
-import com.ne.voiceguider.util.LocationUtil;
+import com.ne.voiceguider.util.BaiduLocationUtil;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -46,7 +46,7 @@ public class HikingFragment extends Fragment {
 	private ListView citybean_listview = null;
 	private CityBeanListAdapter mCityBeanListAdapter = null;
 	
-	private LocationUtil mLocationUtil;
+	private BaiduLocationUtil mLocationUtil;
 	private MyBDLocationListenner mMyBDLocationListenner;
 	private AlertDialog.Builder builder;
 	@Override  
@@ -95,7 +95,7 @@ public class HikingFragment extends Fragment {
 			}
 		});
 		mMyBDLocationListenner = new MyBDLocationListenner();
-		mLocationUtil = new LocationUtil(mContext, mMyBDLocationListenner);
+		mLocationUtil = new BaiduLocationUtil(mContext, mMyBDLocationListenner);
 		return view;  
 	}  
 

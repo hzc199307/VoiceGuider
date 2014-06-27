@@ -18,7 +18,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationOverlay;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 
-public class LocationUtil {
+public class BaiduLocationUtil {
 
 	private Context mContext;
 	// 定位相关
@@ -31,7 +31,7 @@ public class LocationUtil {
 	private LocationClientOption option = new LocationClientOption();
 	//定位图层
 	private boolean isFirstLocation = true;//是否首次定位
-	public LocationUtil(Context mContext,BDLocationListener mListener)
+	public BaiduLocationUtil(Context mContext,BDLocationListener mListener)
 	{
 		this.mContext = mContext;
 		//定位初始化
@@ -49,7 +49,7 @@ public class LocationUtil {
 	}
 
 	private MyLocationOverlay myLocationOverlay = null;
-	public LocationUtil(Context mContext,BDLocationListener mListener,MapView mMapView)
+	public BaiduLocationUtil(Context mContext,BDLocationListener mListener,MapView mMapView)
 	{
 		this.mContext = mContext;
 		initOrientation();

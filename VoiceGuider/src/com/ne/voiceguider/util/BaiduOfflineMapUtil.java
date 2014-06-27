@@ -22,7 +22,7 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
  * @date 2014年5月20日 下午4:39:17 
  *
  */
-public class OfflineMapUtil {
+public class BaiduOfflineMapUtil {
 
 	private MKOfflineMap mOffline = null;
 	private Context mContext = null;
@@ -31,7 +31,7 @@ public class OfflineMapUtil {
 	}
 	private MapController mMapController = null;
 
-	public OfflineMapUtil(Context mContext,MapView mMapView,MKOfflineMapListener mMyMKOfflineMapListener) {
+	public BaiduOfflineMapUtil(Context mContext,MapView mMapView,MKOfflineMapListener mMyMKOfflineMapListener) {
 		// TODO Auto-generated constructor stub
 		this.mContext = mContext;
 		mOffline = new MKOfflineMap();  

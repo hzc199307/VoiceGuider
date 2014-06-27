@@ -1,8 +1,9 @@
 package com.ne.voiceguider.bean;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
-public class BigScene {
+public class BigScene implements Bean{
 	private int bigSceneID=-1;
 	private String bigSceneName;
 	private String bigScenePinyin;
@@ -56,6 +57,10 @@ public class BigScene {
 	}
 	public void setMP3Downloaded(int isMP3Downloaded) {
 		this.isMP3Downloaded = isMP3Downloaded;
+	}
+	@Override
+	public LatLng getLatLng() {
+		return new LatLng(latitude,longitude);
 	}
 
 	

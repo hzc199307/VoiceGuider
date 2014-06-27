@@ -3,8 +3,9 @@ package com.ne.voiceguider.bean;
 import java.io.Serializable;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
-public class CityBean implements Serializable{
+public class CityBean implements Serializable,Bean{
 	
 	//private static final long serialVersionUID = 1L;
 	private int cityID=-1;
@@ -15,6 +16,10 @@ public class CityBean implements Serializable{
 	public GeoPoint getGeoPoint()
 	{
 		return new GeoPoint((int)(latitude*1e6), (int)(longtitude*1e6));
+	}
+	@Override
+	public LatLng getLatLng() {
+		return new LatLng(latitude,longtitude);
 	}
 	public int getCityID() {
 		return cityID;

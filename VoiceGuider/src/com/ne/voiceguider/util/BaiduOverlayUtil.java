@@ -43,7 +43,7 @@ import com.ne.voiceguider.dao.CitySceneDao;
  * @date 2014年5月23日 下午12:13:30 
  *
  */
-public class OverlayUtil<Class> {
+public class BaiduOverlayUtil<Class> {
 
 	private String TAG = "OverlayUtil";
 
@@ -72,23 +72,23 @@ public class OverlayUtil<Class> {
 	
 	private String cityPinyin = null;
 
-	public static OverlayUtil newInstanceForBigScenes(MapView mapView,Context context,String cityPinyin)
+	public static BaiduOverlayUtil newInstanceForBigScenes(MapView mapView,Context context,String cityPinyin)
 	{
 		
-		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
+		BaiduOverlayUtil mOverlayUtil = new BaiduOverlayUtil(mapView,context);
 		mOverlayUtil.initForBigScenes();
 		mOverlayUtil.setCityPinyin(cityPinyin);
 		return mOverlayUtil;
 	}
 
-	public static OverlayUtil newInstanceForSmallScenes(MapView mapView,Context context,PopupClickListener listener)
+	public static BaiduOverlayUtil newInstanceForSmallScenes(MapView mapView,Context context,PopupClickListener listener)
 	{
-		OverlayUtil mOverlayUtil = new OverlayUtil(mapView,context);
+		BaiduOverlayUtil mOverlayUtil = new BaiduOverlayUtil(mapView,context);
 		mOverlayUtil.initForSmallScenes(listener);
 		return mOverlayUtil;
 	}
 
-	public OverlayUtil(MapView mapView,Context context) {
+	public BaiduOverlayUtil(MapView mapView,Context context) {
 		// TODO Auto-generated constructor stub
 		this.mMapView = mapView;
 		this.mContext = context;
@@ -301,9 +301,9 @@ public class OverlayUtil<Class> {
 				nowBundle.putString("cityPinyin", cityPinyin);
 				isPopShowed=true;
 				Bitmap[] bitMaps={
-						BMapUtil.getBitmapFromView(popupLeft), 		
-						BMapUtil.getBitmapFromView(popupInfo), 		
-						BMapUtil.getBitmapFromView(popupRight)		
+						BaiduUtil.getBitmapFromView(popupLeft), 		
+						BaiduUtil.getBitmapFromView(popupInfo), 		
+						BaiduUtil.getBitmapFromView(popupRight)		
 				};
 				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),0);
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");
@@ -350,9 +350,9 @@ public class OverlayUtil<Class> {
 				Log.v(TAG, selectedSmallScene.getSmallSceneName());
 				isPopShowed=true;
 				Bitmap[] bitMaps={
-						BMapUtil.getBitmapFromView(popupLeft), 		
-						BMapUtil.getBitmapFromView(popupInfo), 		
-						BMapUtil.getBitmapFromView(popupRight)		
+						BaiduUtil.getBitmapFromView(popupLeft), 		
+						BaiduUtil.getBitmapFromView(popupInfo), 		
+						BaiduUtil.getBitmapFromView(popupRight)		
 				};
 				mButtonPop.showPopup(bitMaps[1],mCurItem.getPoint(),0);
 				Log.v("OverlayUtil", "onTap 显示跳转pop 关闭景点名称text");

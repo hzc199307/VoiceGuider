@@ -29,9 +29,9 @@ import com.ne.voiceguider.adapter.BigSceneListAdapter;
 import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.bean.CityBean;
 import com.ne.voiceguider.dao.CitySceneDao;
-import com.ne.voiceguider.util.BMapUtil;
-import com.ne.voiceguider.util.OfflineMapUtil;
-import com.ne.voiceguider.util.OverlayUtil;
+import com.ne.voiceguider.util.BaiduUtil;
+import com.ne.voiceguider.util.BaiduOfflineMapUtil;
+import com.ne.voiceguider.util.BaiduOverlayUtil;
 import com.ne.voiceguider.view.RoundProgressBar;
 
 import android.support.v7.app.ActionBarActivity;
@@ -86,7 +86,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 
 	private String TAG = "CityActivity";
 	private MapView mMapView = null;
-	private OfflineMapUtil mOfflineMapUtil = null;
+	private BaiduOfflineMapUtil mOfflineMapUtil = null;
 	private String cityName = null,cityPinyin=null;
 	private int cityID,cityDownloadId = -1;
 	private MKOLUpdateElement cityUpdateInfo = null;
@@ -126,7 +126,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	/**
 	 * 地图上面插标
 	 */
-	private OverlayUtil mOverlayUtil;
+	private BaiduOverlayUtil mOverlayUtil;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -364,7 +364,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 		// 得到mMapView的控制权,可以用它控制和驱动平移和缩放
 		GeoPoint point = null;
 		Intent  intent = getIntent();
-		mOfflineMapUtil = new OfflineMapUtil(this,mMapView,new MyMKOfflineMapListener());
+		mOfflineMapUtil = new BaiduOfflineMapUtil(this,mMapView,new MyMKOfflineMapListener());
 		if ( intent.hasExtra("cityName")  ){
 			//当用intent参数时，设置中心点为指定点
 			Bundle b = intent.getExtras();
@@ -564,7 +564,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	public void initOverlay()
 	{
 
-		mOverlayUtil = mOverlayUtil = OverlayUtil.newInstanceForBigScenes(mMapView, this,cityPinyin);
+		mOverlayUtil = mOverlayUtil = BaiduOverlayUtil.newInstanceForBigScenes(mMapView, this,cityPinyin);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(cityID));
 		//		/**

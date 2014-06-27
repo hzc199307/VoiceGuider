@@ -1,8 +1,9 @@
 package com.ne.voiceguider.bean;
 
 import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
 
-public class SmallScene {
+public class SmallScene implements Bean{
 	private int smallSceneID;
 	private String smallSceneName;
 	private String smallScenePinyin;
@@ -15,6 +16,10 @@ public class SmallScene {
 	public GeoPoint getGeoPoint()
 	{
 		return new GeoPoint((int)(latitude*1e6), (int)(longtitude*1e6));
+	}
+	@Override
+	public LatLng getLatLng() {
+		return new LatLng(latitude,longtitude);
 	}
 	public int getSmallSceneID() {
 		return smallSceneID;

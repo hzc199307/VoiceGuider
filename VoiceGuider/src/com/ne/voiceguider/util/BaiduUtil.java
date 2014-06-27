@@ -3,7 +3,7 @@ package com.ne.voiceguider.util;
 import android.graphics.Bitmap;
 import android.view.View;
 
-public class BMapUtil {
+public class BaiduUtil {
     	
 	/**
 	 * 从view 得到图片

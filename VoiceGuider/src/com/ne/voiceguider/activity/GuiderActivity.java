@@ -17,12 +17,12 @@ import com.ne.voiceguider.bean.SmallScene;
 import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.fragment.HikingFragment.MyBDLocationListenner;
 import com.ne.voiceguider.service.VoicePlayerService;
-import com.ne.voiceguider.util.LocationUtil;
+import com.ne.voiceguider.util.BaiduLocationUtil;
 import com.ne.voiceguider.util.MusicPlayerUtil;
-import com.ne.voiceguider.util.OfflineMapUtil;
-import com.ne.voiceguider.util.OverlayUtil;
-import com.ne.voiceguider.util.PolylineUtil;
-import com.ne.voiceguider.util.RouteOverlayUtil;
+import com.ne.voiceguider.util.BaiduOfflineMapUtil;
+import com.ne.voiceguider.util.BaiduOverlayUtil;
+import com.ne.voiceguider.util.BaiduPolylineUtil;
+import com.ne.voiceguider.util.BaiduRouteOverlayUtil;
 import com.ne.voiceguider.util.SystemUtil;
 
 import android.support.v7.app.ActionBarActivity;
@@ -175,7 +175,7 @@ public class GuiderActivity extends ActionBarActivity {
 	 * @return void 
 	 * @throws
 	 */
-	private LocationUtil mLocationUtil;
+	private BaiduLocationUtil mLocationUtil;
 	private MyBDLocationListenner mMyBDLocationListenner;
 	private ImageButton guider_location_button ;
 	private boolean isLocating = false;//是否正在定位
@@ -183,7 +183,7 @@ public class GuiderActivity extends ActionBarActivity {
 	public void initLocation()
 	{
 		mMyBDLocationListenner = new MyBDLocationListenner();
-		mLocationUtil = new LocationUtil(this, mMyBDLocationListenner,mMapView);
+		mLocationUtil = new BaiduLocationUtil(this, mMyBDLocationListenner,mMapView);
 		guider_location_button = (ImageButton)findViewById(R.id.guider_location_button);
 		guider_location_button.setOnClickListener(new ImageButton.OnClickListener() {
 
@@ -266,11 +266,11 @@ public class GuiderActivity extends ActionBarActivity {
 	/**
 	 * 地图上面插标
 	 */
-	private OverlayUtil mOverlayUtil;
+	private BaiduOverlayUtil mOverlayUtil;
 	public void initOverlay()
 	{
 
-		mOverlayUtil = OverlayUtil.newInstanceForSmallScenes(mMapView, this,new MyPopupClickForSmallScenesListener());
+		mOverlayUtil = BaiduOverlayUtil.newInstanceForSmallScenes(mMapView, this,new MyPopupClickForSmallScenesListener());
 		mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getSmallScenes(bigSceneID));
 		mOverlayUtil.showAll();
@@ -758,11 +758,11 @@ public class GuiderActivity extends ActionBarActivity {
 	};
 
 	private Button guider_route;
-	private PolylineUtil mRouteOverlayUtil; // TODO 此处课可以考虑用 RouteOverlayUtil 还是 PolylineUtil
+	private BaiduPolylineUtil mRouteOverlayUtil; // TODO 此处课可以考虑用 RouteOverlayUtil 还是 PolylineUtil
 	private void guider_route()
 	{
 		guider_route = (Button)findViewById(R.id.guider_route);
-		mRouteOverlayUtil = new PolylineUtil(this, mMapView);
+		mRouteOverlayUtil = new BaiduPolylineUtil(this, mMapView);
 		
 		guider_route.setOnClickListener(new OnClickListener() {
 			

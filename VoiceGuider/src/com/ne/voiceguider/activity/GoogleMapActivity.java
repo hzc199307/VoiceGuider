@@ -1,5 +1,7 @@
 package com.ne.voiceguider.activity;
 
+import java.util.List;
+
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,9 +15,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ne.voiceguider.R;
+import com.ne.voiceguider.bean.Bean;
+import com.ne.voiceguider.bean.BigScene;
 import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.util.GoogleLocationUtil;
 import com.ne.voiceguider.util.GoogleMarkerUtil;
+import com.ne.voiceguider.util.GooglePolylineUtil;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
@@ -42,6 +47,7 @@ public class GoogleMapActivity extends ActionBarActivity {
 	private GoogleMarkerUtil mGoogleMarkerUtil;
 	private GoogleLocationUtil mGoogleLocationUtil;
 	private LocationSourceListener mLocationSourceListener;
+	private GooglePolylineUtil mGooglePolylineUtil;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +60,12 @@ public class GoogleMapActivity extends ActionBarActivity {
 		setUpMapIfNeeded();
 
 		mGoogleMarkerUtil = new GoogleMarkerUtil(this, googleMap);
+		mGooglePolylineUtil = new GooglePolylineUtil(googleMap);
+		
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mGoogleMarkerUtil.setListObject(mCitySceneDao.getBigScenes(1));
+		Bean m = new BigScene();
+		mGooglePolylineUtil.setListData(mCitySceneDao.getBigScenes(1));
 	}
 
 	@Override
@@ -102,6 +112,7 @@ public class GoogleMapActivity extends ActionBarActivity {
 		googleMap.setLocationSource(mLocationSourceListener);
 		googleMap.setMyLocationEnabled(true);
 		Toast.makeText(getApplicationContext(), "setUpMap", Toast.LENGTH_SHORT).show();
+		
 		//		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-33.87365, 151.20689), 10));
 		
 	}
@@ -128,6 +139,7 @@ public class GoogleMapActivity extends ActionBarActivity {
 					}
 					mGoogleMarkerUtil.showAll();
 					mGoogleMarkerUtil.showSpan();
+					mGooglePolylineUtil.showAll();
 					//googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
 				}
 			});

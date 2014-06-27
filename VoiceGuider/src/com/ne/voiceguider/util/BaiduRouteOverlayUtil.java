@@ -19,13 +19,13 @@ import com.ne.voiceguider.bean.SmallScene;
  * @date 2014年6月26日 上午9:31:13 
  *
  */
-public class RouteOverlayUtil {
+public class BaiduRouteOverlayUtil {
 
 	private List<SmallScene> listSmallScenes;
 	private GeoPoint[] listGeoPoints;
 	private RouteOverlay routeOverlay;
 	private MapView mMapView;
-	public RouteOverlayUtil(Context mContext,MapView mMapView) {
+	public BaiduRouteOverlayUtil(Context mContext,MapView mMapView) {
 		routeOverlay = new RouteOverlay((Activity) mContext, mMapView);	
 		this.mMapView = mMapView;
 		mMapView.refresh();
