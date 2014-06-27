@@ -32,6 +32,7 @@ import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.util.BaiduUtil;
 import com.ne.voiceguider.util.BaiduOfflineMapUtil;
 import com.ne.voiceguider.util.BaiduOverlayUtil;
+import com.ne.voiceguider.util.OverlayUtil;
 import com.ne.voiceguider.view.RoundProgressBar;
 
 import android.support.v7.app.ActionBarActivity;
@@ -126,7 +127,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	/**
 	 * 地图上面插标
 	 */
-	private BaiduOverlayUtil mOverlayUtil;
+	private OverlayUtil mOverlayUtil;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -564,7 +565,7 @@ public class CityActivity extends ActionBarActivity implements OnGestureListener
 	public void initOverlay()
 	{
 
-		mOverlayUtil = mOverlayUtil = BaiduOverlayUtil.newInstanceForBigScenes(mMapView, this,cityPinyin);
+		mOverlayUtil = OverlayUtil.newInstanceForBigScenes(mMapView, this,cityPinyin);
 		CitySceneDao mCitySceneDao = new CitySceneDao(this);
 		mOverlayUtil.setListObject(mCitySceneDao.getBigScenes(cityID));
 		//		/**

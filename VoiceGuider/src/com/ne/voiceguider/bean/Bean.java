@@ -8,4 +8,12 @@ public interface Bean {
 	GeoPoint getGeoPoint();
 	
 	LatLng getLatLng();
+	
+	int getID();
+	void setID(int id);
+	
+	String getName();
+	void setName(String name);
+	
+	String getResourceName();
 }

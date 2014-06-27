@@ -21,6 +21,7 @@ import com.ne.voiceguider.dao.CitySceneDao;
 import com.ne.voiceguider.util.GoogleLocationUtil;
 import com.ne.voiceguider.util.GoogleMarkerUtil;
 import com.ne.voiceguider.util.GooglePolylineUtil;
+import com.ne.voiceguider.util.LocationUtil;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
@@ -49,6 +50,8 @@ public class GoogleMapActivity extends ActionBarActivity {
 	private LocationSourceListener mLocationSourceListener;
 	private GooglePolylineUtil mGooglePolylineUtil;
 	
+	//private LocationUtil mLocationUtil;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +69,8 @@ public class GoogleMapActivity extends ActionBarActivity {
 		mGoogleMarkerUtil.setListObject(mCitySceneDao.getBigScenes(1));
 		Bean m = new BigScene();
 		mGooglePolylineUtil.setListData(mCitySceneDao.getBigScenes(1));
+	
+		//mLocationUtil = new LocationUtil(this);
 	}
 
 	@Override
@@ -146,7 +151,7 @@ public class GoogleMapActivity extends ActionBarActivity {
 		}
 	}
 
-	private static class LocationSourceListener implements LocationSource,LocationListener{
+	private class LocationSourceListener implements LocationSource,LocationListener{
 
 		private OnLocationChangedListener mListener;
 		private boolean mPaused = false;
@@ -174,7 +179,9 @@ public class GoogleMapActivity extends ActionBarActivity {
 		@Override
 		public void onLocationChanged(Location arg0) {
 			// TODO 这里可以改定位坐标  google定位有偏移
-			//Toast.makeText(getApplicationContext(), "onLocationChanged", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(getApplicationContext(), "onLocationChanged", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), arg0+"", Toast.LENGTH_SHORT).show();
+			
 			arg0.setAccuracy(10000);
 			if (mListener != null) {
 				mListener.onLocationChanged(arg0);

@@ -62,6 +62,27 @@ public class BigScene implements Bean{
 	public LatLng getLatLng() {
 		return new LatLng(latitude,longitude);
 	}
+	@Override
+	public int getID() {
+		return bigSceneID;
+	}
+	@Override
+	public void setID(int id) {
+		bigSceneID = id;
+	}
+	@Override
+	public String getName() {
+		return bigSceneName;
+	}
+	@Override
+	public void setName(String name) {
+		bigSceneName = name;
+	}
+	@Override
+	public String getResourceName() {
+		// TODO Auto-generated method stub
+		return "bigscene_"+getBigScenePinyin();
+	}
 
 	
 }

@@ -52,4 +52,25 @@ public class CityBean implements Serializable,Bean{
 		this.latitude = latitude;
 	}
 
+	@Override
+	public int getID() {
+		return cityID;
+	}
+	@Override
+	public void setID(int id) {
+		cityID = id;
+	}
+	@Override
+	public String getName() {
+		return cityName;
+	}
+	@Override
+	public void setName(String name) {
+		cityName = name;
+	}
+	@Override
+	public String getResourceName() {
+		// TODO Auto-generated method stub
+		return "city_"+getCityPinyin();
+	}
 }

@@ -70,4 +70,25 @@ public class SmallScene implements Bean{
 		this.mp3Time = mp3Time;
 	}
 
+	@Override
+	public int getID() {
+		return smallSceneID;
+	}
+	@Override
+	public void setID(int id) {
+		smallSceneID = id;
+	}
+	@Override
+	public String getName() {
+		return smallSceneName;
+	}
+	@Override
+	public void setName(String name) {
+		smallSceneName = name;
+	}
+	@Override
+	public String getResourceName() {
+		// TODO Auto-generated method stub
+		return "smallscene_"+getSmallScenePinyin();
+	}
 }
