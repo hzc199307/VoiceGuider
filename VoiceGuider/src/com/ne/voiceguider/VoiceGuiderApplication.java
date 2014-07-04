@@ -7,6 +7,7 @@ import com.baidu.mapapi.MKGeneralListener;
 import com.baidu.mapapi.map.MKEvent;
 import com.ne.voiceguider.DBHelper.DBHelper;
 import com.ne.voiceguider.service.VoicePlayerService;
+import com.ne.voiceguider.util.SystemUtil;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -44,6 +45,9 @@ public class VoiceGuiderApplication extends Application {
 //		initVoicePlayerService();//service绑定到MainActivity去  此处会报错 TODO
 		Log.v(TAG, "onCreate2");
 		onDB();
+		
+		SystemUtil.init(getApplicationContext());
+		
 		super.onCreate();
 	}
 	/**

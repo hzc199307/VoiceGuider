@@ -37,16 +37,16 @@ import com.ne.voiceguider.bean.SmallScene;
 import com.ne.voiceguider.dao.CitySceneDao;
 
 /**
- * 
+ * 准备对 {@link BaiduLocationUtil}进行修改
  * @ClassName: OverlayUtil 
  * @Description: TODO 
  * @author HeZhichao
- * @date 2014年5月23日 下午12:13:30 
+ * @date 2014年6月27日
  *
  */
 public class OverlayUtil<Class> {
 
-	private String TAG = "OverlayUtil";
+	private static final String TAG = "OverlayUtil";
 
 
 	private List<Class> listObject;

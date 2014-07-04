@@ -10,6 +10,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+/**
+ * android 自带的定位工具类
+ * @ClassName: LocationUtil 
+ * @Description: TODO 
+ * @author HeZhichao
+ * @date 2014年6月27日 下午6:02:02 
+ *
+ */
 public class LocationUtil {
 
 	private LocationManager mLocationManager ;

@@ -132,7 +132,6 @@ public class GuiderActivity extends ActionBarActivity {
 		webview();
 		guider_route();
 		
-		mSystemUtil = new SystemUtil(this);
 	}
 
 	private MapView mMapView = null;
@@ -675,7 +674,6 @@ public class GuiderActivity extends ActionBarActivity {
 	 * @param position
 	 */
 	
-	private SystemUtil mSystemUtil  ;
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
@@ -683,16 +681,16 @@ public class GuiderActivity extends ActionBarActivity {
 			finish();break;
 		case KeyEvent.KEYCODE_VOLUME_UP://TODO 已经可以修改  只是弹出音量条不对
 		{
-			if(mSystemUtil.getMusicVolume()<0.9)
-				mmMediaBinder.setVolume(mSystemUtil.getMusicVolume()+0.1);
+			if(SystemUtil.getMusicVolume()<0.9)
+				mmMediaBinder.setVolume(SystemUtil.getMusicVolume()+0.1);
 			else
 				mmMediaBinder.setVolume(1.0);
 			break;//mSystemUtil.addMusicVolume(10);
 		}
 		case KeyEvent.KEYCODE_VOLUME_DOWN:
 		{
-			if(mSystemUtil.getMusicVolume()>0.1)
-				mmMediaBinder.setVolume(mSystemUtil.getMusicVolume()-0.1);
+			if(SystemUtil.getMusicVolume()>0.1)
+				mmMediaBinder.setVolume(SystemUtil.getMusicVolume()-0.1);
 			else
 				mmMediaBinder.setVolume(0.0);
 			//mSystemUtil.subtractMusicVolume(10);break;
