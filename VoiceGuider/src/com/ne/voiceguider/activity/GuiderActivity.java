@@ -584,7 +584,7 @@ public class GuiderActivity extends ActionBarActivity {
 	 */
 	void webview()
 	{
-		loadAssetHtml();
+		//loadAssetHtml();
 		guider_text_webview = (WebView)findViewById(R.id.guider_text_webview);
 		scene_voice_text_button = (Button)findViewById(R.id.scene_voice_text_button);
 		scene_voice_text_button.setOnClickListener(new Button.OnClickListener() {
@@ -666,6 +666,9 @@ public class GuiderActivity extends ActionBarActivity {
 	 */
 	public void changeHtml()
 	{
+		//guider_text_webview.loadUrl("file:///android_asset/HTML/mapv3.html");
+		//guider_text_webview.loadUrl("file:///android_asset/HTML/example.html");
+		//guider_text_webview.loadUrl("http://slenderpony.com");
 		guider_text_webview.loadUrl("file:///android_asset/HTML/html/"+cityPinyin+"/"+bigScenePinyin+"/"+mSmallSceneAdapter.getItem(mmMediaBinder.getPosition()).getSmallScenePinyin()+".html");
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import com.ne.voiceguider.bean.BigScene;
  */
 public class GoogleMarkerUtil {
 
+	private static final String TAG = "GoogleMarkerUtil";
 	private Context mContext;
 	private List<BigScene> listObject;
 	private List<MarkerOptions> listMarkerOptions;//marker
@@ -39,6 +41,7 @@ public class GoogleMarkerUtil {
 	public GoogleMarkerUtil(Context mContext,GoogleMap mGoogleMap) {
 		this.mContext = mContext;
 		this.mGoogleMap = mGoogleMap;
+		Log.v(TAG, "mGoogleMap==null?"+(mGoogleMap==null));
 		mGoogleMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
 	}
 

@@ -151,6 +151,7 @@ public class GoogleMapActivity extends ActionBarActivity {
 		}
 	}
 
+	//这样可以更改定位显示
 	private class LocationSourceListener implements LocationSource,LocationListener{
 
 		private OnLocationChangedListener mListener;
